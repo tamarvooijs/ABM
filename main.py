@@ -72,6 +72,7 @@ class Municipality(Agent):
         print("Hi, I am municipality " + str(self.unique_id) + ".")
         return 0
 
+
 class RecyclingCompany(Agent):
     def __init__(self, unique_id, model, technology, contract, percentage_filtered):
         super().__init__(unique_id, model)
@@ -84,6 +85,7 @@ class RecyclingCompany(Agent):
     def step(self):
         print("Hi, I am company " + str(self.unique_id) + ".")
         return 0
+
 
 class RecyclingModel(Model):
     "Model in which agents recycle"
@@ -137,9 +139,3 @@ number_of_steps = 3
 for i in range(number_of_steps):
     print("Step:", i)
     model.step()
-
-
-
-
-
-
