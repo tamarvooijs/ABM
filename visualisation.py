@@ -1,4 +1,6 @@
-def agent_portrayal(agent:Municipality):
+from main import RecyclingModel
+
+def agent_portrayal(agent: Municipality):
     portrayal = {"Shape": "circle",
                  "Filled": "true",
                  "Layer": 0,
