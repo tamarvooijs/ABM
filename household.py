@@ -40,19 +40,48 @@ def waste(x, type):
 class Household(Agent):
     "Households that recycle a certain amount of plastic each year"
 
-    def __init__(self, unique_id, model, type, access, municipality, produced_volume, knowledge, perception):
+    def __init__(self, unique_id, model, type, access, municipality, produced_volume_base):
         super().__init__(unique_id, model)
         self.agent = "Household"
         self.type = type
         self.access = access
         self.municipality = municipality
-        self.produced_volume = produced_volume
-        self.knowledge = knowledge
-        self.perception = perception
+        self.produced_volume_base = produced_volume_base
+        self.produced_volume_updated = 0
+        Household.calculate_knowledge(self)
+        Household.calculate_perception(self)
 
     def step(self):
-        self.produced_volume = waste(self.model.schedule.time, self.type)
+        self.produced_volume_base = waste(self.model.schedule.time, self.type)
+        self.produced_volume_updated = self.produced_volume_base * self.knowledge * self.perception
 
         print("Hi, I am household " + str(self.unique_id) + " and I produced this amount of waste:",
-              round(self.produced_volume, 2))
+              str(round(self.produced_volume_updated, 2)) + "and knowledge", self.knowledge )
         return 0
+
+    def calculate_perception(self):
+        if self.type == "Individual":
+            self.perception = random.uniform(0.4, 0.6)
+        if self.type == "Retired":
+            self.perception = random.uniform(0.2, 0.5)
+        if self.type == "Couple":
+            self.perception = random.uniform(0.5, 0.7)
+        if self.type == "Family":
+            self.perception = random.uniform(0.3, 0.6)
+
+
+    def calculate_knowledge(self):
+        if self.type == "Individual":
+            self.knowledge = random.uniform(0.4, 0.6)
+        if self.type == "Retired":
+            self.knowledge = random.uniform(0.2, 0.5)
+        if self.type == "Couple":
+            self.knowledge = random.uniform(0.5, 0.7)
+        if self.type == "Family":
+            self.knowledge = random.uniform(0.3, 0.6)
+
+
+
+
+
+

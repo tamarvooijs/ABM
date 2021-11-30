@@ -122,13 +122,13 @@ class RecyclingModel(Model):
         for i in range(No_HH):
             type = random.choice(types_of_households)
             if type == "Individual":
-                household = Household(i, self, "Individual", "yes", "Rotterdam", produced_volume=2, knowledge=0.5, perception=0.5)
+                household = Household(i, self, "Individual", "yes", "Rotterdam", produced_volume_base=2)
             elif type =="Couple":
-                household = Household(i, self, "Couple", "yes", "Rotterdam", produced_volume=2, knowledge=0.5, perception=0.5)
+                household = Household(i, self, "Couple", "yes", "Rotterdam", produced_volume_base=2)
             elif type == "Family":
-                household = Household(i, self, "Family", "yes", "Rotterdam", produced_volume=2, knowledge=0.5, perception=0.5)
+                household = Household(i, self, "Family", "yes", "Rotterdam", produced_volume_base=2)
             elif type == "Retired":
-                household = Household(i, self, "Family", "yes", "Rotterdam", produced_volume=2, knowledge=0.5, perception=0.5)
+                household = Household(i, self, "Family", "yes", "Rotterdam", produced_volume_base=2)
 
             self.schedule.add(household)
 
@@ -150,7 +150,7 @@ class RecyclingModel(Model):
         total_waste = 0
         for i in self.schedule.agents:
             if i.agent == "Household":
-                total_waste += i.produced_volume
+                total_waste += i.produced_volume_updated
         for i in self.schedule.agents:
             # This only works if there is one recyclingcompany
             # TO DO: aggregate to more companies
