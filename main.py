@@ -16,6 +16,13 @@ import statistics as stat
 #import pandas
 import pandas as pd
 
+#import visualisation mesa
+from mesa.visualization.modules import CanvasGrid
+from mesa.visualization.ModularVisualization import ModularServer
+
+#import space mesa
+from mesa.space import MultiGrid
+
 # Required libraries for animation
 from matplotlib.animation import FuncAnimation
 from matplotlib import animation, rc, collections
@@ -72,7 +79,6 @@ class Municipality(Agent):
         print("Hi, I am municipality " + str(self.unique_id) + ".")
         return 0
 
-
 class RecyclingCompany(Agent):
     def __init__(self, unique_id, model, technology, contract, percentage_filtered):
         super().__init__(unique_id, model)
@@ -86,11 +92,11 @@ class RecyclingCompany(Agent):
         print("Hi, I am company " + str(self.unique_id) + ".")
         return 0
 
-
 class RecyclingModel(Model):
     "Model in which agents recycle"
 
-    def __init__(self, No_HH, No_Mun, No_Comp):
+    def __init__(self, No_HH, No_Mun, No_Comp, width, height):
+        self.grid = MultiGrid(width, height, True)
         self.schedule = time.RandomActivation(self)
 
         types_of_households = ["Individual", "Couple", "Family", "Retired"]
@@ -112,6 +118,11 @@ class RecyclingModel(Model):
             municipality = Municipality(i+No_HH, self, 1, 100, 1, 3)
             self.schedule.add(municipality)
 
+            # Create municipalities on a random grid cell
+            x = self.random.randrange(self.grid.width)
+            y = self.random.randrange(self.grid.height)
+            self.grid.place_agent(municipality, (x, y))
+
         for i in range(No_Comp):
             company = RecyclingCompany(i+No_Mun+No_HH, self, "technology 1", "contract 2", 50)
             self.schedule.add(company)
@@ -132,10 +143,28 @@ class RecyclingModel(Model):
         print("Total collected", waste_collected)
 
 
+#model = RecyclingModel(2, 1, 1)
 
-model = RecyclingModel(2, 1, 1)
+#number_of_steps = 3
+#for i in range(number_of_steps):
+ #   print("Step:", i)
+ #   model.step()
 
-number_of_steps = 3
-for i in range(number_of_steps):
-    print("Step:", i)
-    model.step()
+def agent_portrayal(agent: Municipality):
+    portrayal = {"Shape": "circle",
+                 "Filled": "true",
+                 "Layer": 0,
+                 "Color": "red",
+                 "r": 2}
+    return portrayal
+
+grid = CanvasGrid(agent_portrayal, 10, 10, 500, 500)
+server = ModularServer(RecyclingModel,
+                       [grid],
+                       "Recycling Model",
+                       {"No_HH": 5, "No_Mun": 1, "No_Comp": 2, "width": 10, "height": 10})
+server.port = 8521  # The default
+server.launch()
+
+
+
