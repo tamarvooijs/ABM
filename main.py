@@ -78,15 +78,11 @@ class RandomActivationPerType(time.BaseScheduler):
 
         """
         sequence = ["Municipality", "Household", "Company"]
-        for agent in self.agent_buffer(shuffled=True):
-            if agent.agent == "Municipality":
-                agent.step()
-        for agent in self.agent_buffer(shuffled=True):
-            if agent.agent == "Household":
-                agent.step()
-        for agent in self.agent_buffer(shuffled=True):
-            if agent.agent == "Company":
-                agent.step()
+        for i in sequence:
+            for agent in self.agent_buffer(shuffled=True):
+                if agent.agent == i:
+                    agent.step()
+
         self.steps += 1
         self.time += 1
 
