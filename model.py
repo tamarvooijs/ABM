@@ -37,8 +37,10 @@ from recyclingcompany import RecyclingCompany
 class RecyclingModel(Model):
     "Model in which agents recycle"
 
-    def __init__(self, No_HH, No_Mun, No_Comp, width, height):
-        self.grid = MultiGrid(width, height, True)
+    def __init__(self, No_HH, No_Mun, No_Comp):
+        self.width = 10
+        self.height = 10
+        self.grid = MultiGrid(self.width, self.height, True)
         self.schedule = time.RandomActivation(self)
 
         types_of_households = ["Individual", "Couple", "Family", "Retired"]
