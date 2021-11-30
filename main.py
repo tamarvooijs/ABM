@@ -4,7 +4,8 @@ from mesa import Agent, Model
 from mesa.datacollection import DataCollector
 #load all available schedulers
 import mesa.time as time
-
+import math
+import random
 # matplot lib for plotting, numpy for all sorts of useful math
 import matplotlib.pyplot as plt
 import numpy as np
@@ -19,12 +20,30 @@ import pandas as pd
 from matplotlib.animation import FuncAnimation
 from matplotlib import animation, rc, collections
 from IPython.display import HTML
+def waste(x, type):
+
+    if type == "Individual":
+        waste = 40 - 0.04 * x - math.exp(-0.01 * x) * math.sin(0.3 * x)
+
+    elif type == "Couple" or "Retired":
+        waste = (40 - 0.04 * x - math.exp(-0.01 * x) * math.sin(0.3 * x)) * 2
+
+    elif type == "Family":
+        waste = 40 - 0.04 * x - math.exp(-0.01 * x) * math.sin(0.3 * x) * 4
+
+    else:
+        print("error")
+        return 1
+
+    return waste
+
 
 class Household(Agent):
     "Households that recylcle a certain amount of plastic each year"
 
     def __init__(self, unique_id, model, type, access, municipality, produced_volume, knowledge, perception):
         super().__init__(unique_id, model)
+        self.agent = "Household"
         self.type = type
         self.access = access
         self.municipality = municipality
@@ -33,7 +52,8 @@ class Household(Agent):
         self.perception = perception
 
     def step(self):
-        self.produced_volume += 40/12
+        self.produced_volume = waste(model.schedule.time, self.type)
+
         print("Hi, I am household " + str(self.unique_id) + " and I produced this amount of waste:",
               round(self.produced_volume, 2))
         return 0
@@ -42,6 +62,7 @@ class Household(Agent):
 class Municipality(Agent):
     def __init__(self, unique_id, model, number_of_households, budget, contract, infrastructure):
         super().__init__(unique_id, model)
+        self.agent = "Municipality"
         self.number_of_households = number_of_households
         self.budget = budget
         self.contract = contract
@@ -54,9 +75,11 @@ class Municipality(Agent):
 class RecyclingCompany(Agent):
     def __init__(self, unique_id, model, technology, contract, percentage_filtered):
         super().__init__(unique_id, model)
+        self.agent = "Company"
         self.technology = technology
         self.contract = contract
         self.percentage_filtered = percentage_filtered
+        self.collected = 0
 
     def step(self):
         print("Hi, I am company " + str(self.unique_id) + ".")
@@ -68,8 +91,19 @@ class RecyclingModel(Model):
     def __init__(self, No_HH, No_Mun, No_Comp):
         self.schedule = time.RandomActivation(self)
 
+        types_of_households = ["Individual", "Couple", "Family", "Retired"]
+
         for i in range(No_HH):
-            household = Household(i, self,"single", "yes", "Rotterdam", produced_volume=2, knowledge=0.5, perception=0.5)
+            type = random.choice(types_of_households)
+            if type == "Individual":
+                household = Household(i, self, "Individual", "yes", "Rotterdam", produced_volume=2, knowledge=0.5, perception=0.5)
+            elif type =="Couple":
+                household = Household(i, self, "Couple", "yes", "Rotterdam", produced_volume=2, knowledge=0.5, perception=0.5)
+            elif type == "Family":
+                household = Household(i, self, "Family", "yes", "Rotterdam", produced_volume=2, knowledge=0.5, perception=0.5)
+            elif type == "Retired":
+                household = Household(i, self, "Family", "yes", "Rotterdam", produced_volume=2, knowledge=0.5, perception=0.5)
+
             self.schedule.add(household)
 
         for i in range(No_Mun):
@@ -82,6 +116,19 @@ class RecyclingModel(Model):
 
     def step(self):
         self.schedule.step()
+        total_waste = 0
+        for i in self.schedule.agents:
+            if i.agent == "Household":
+                total_waste += i.produced_volume
+        for i in self.schedule.agents:
+            # This only works if there is one recyclingcompany
+            # TO DO: aggregate to more companies
+            if i.agent == "Company":
+                i.collected += total_waste
+                waste_collected = i.collected
+        print("Total waste this round equals ", total_waste)
+        print("Total collected", waste_collected)
+
 
 
 model = RecyclingModel(2, 1, 1)
