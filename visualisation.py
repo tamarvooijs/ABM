@@ -1,4 +1,13 @@
-from main import RecyclingModel
+from model import RecyclingModel
+from municipality import Municipality
+
+#import visualisation mesa
+from mesa.visualization.modules import CanvasGrid
+from mesa.visualization.ModularVisualization import ModularServer
+
+#import space mesa
+from mesa.space import MultiGrid
+
 
 def agent_portrayal(agent: Municipality):
     portrayal = {"Shape": "circle",

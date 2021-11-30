@@ -21,6 +21,13 @@ from matplotlib.animation import FuncAnimation
 from matplotlib import animation, rc, collections
 from IPython.display import HTML
 
+#import visualisation mesa
+from mesa.visualization.modules import CanvasGrid
+from mesa.visualization.ModularVisualization import ModularServer
+
+#import space mesa
+from mesa.space import MultiGrid
+
 from household import Household, waste
 from municipality import Municipality
 from recyclingcompany import RecyclingCompany
@@ -30,7 +37,8 @@ from recyclingcompany import RecyclingCompany
 class RecyclingModel(Model):
     "Model in which agents recycle"
 
-    def __init__(self, No_HH, No_Mun, No_Comp):
+    def __init__(self, No_HH, No_Mun, No_Comp, width, height):
+        self.grid = MultiGrid(width, height, True)
         self.schedule = time.RandomActivation(self)
 
         types_of_households = ["Individual", "Couple", "Family", "Retired"]
@@ -51,6 +59,11 @@ class RecyclingModel(Model):
         for i in range(No_Mun):
             municipality = Municipality(i+No_HH, self, 1, 100, 1, 3)
             self.schedule.add(municipality)
+
+            # Create municipalities on a random grid cell
+            x = self.random.randrange(self.grid.width)
+            y = self.random.randrange(self.grid.height)
+            self.grid.place_agent(municipality, (x, y))
 
         for i in range(No_Comp):
             company = RecyclingCompany(i+No_Mun+No_HH, self, "technology 1", "contract 2", 50)
