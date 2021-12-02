@@ -21,18 +21,18 @@ from IPython.display import HTML
 
 
 def waste(x, type):
+
     if type == "Individual":
-        waste = 40 - 0.04 * x - math.exp(-0.01 * x) * math.sin(0.3 * x)
-
+        number_of_persons = 1
     elif type == "Couple" or "Retired":
-        waste = (40 - 0.04 * x - math.exp(-0.01 * x) * math.sin(0.3 * x)) * 2
-
+        number_of_persons = 2
     elif type == "Family":
-        waste = 40 - 0.04 * x - math.exp(-0.01 * x) * math.sin(0.3 * x) * 4
-
+        number_of_persons = 4
     else:
         print("error")
         return 1
+
+    waste = 40 - 0.04 * x - math.exp(-0.01 * x) * math.sin(0.3 * x) * number_of_persons
 
     return waste
 
@@ -40,47 +40,54 @@ def waste(x, type):
 class Household(Agent):
     "Households that recycle a certain amount of plastic each year"
 
-    def __init__(self, unique_id, model, type, access, municipality, produced_volume_base):
+    def __init__(self, unique_id, model, type, access, municipality):
         super().__init__(unique_id, model)
         self.agent = "Household"
         self.type = type
         self.access = access
         self.municipality = municipality
-        self.produced_volume_base = produced_volume_base
+        self.produced_volume_base = waste(self.model.schedule.time, self.type)
         self.produced_volume_updated = 0
-        Household.calculate_knowledge(self)
-        Household.calculate_perception(self)
+        Household.initial_knowledge(self)
+        Household.initial_perception(self)
 
     def step(self):
-        self.produced_volume_base = waste(self.model.schedule.time, self.type)
+
+        #self.produced_volume_base = waste(self.model.schedule.time, self.type)
+
         self.produced_volume_updated = self.produced_volume_base * self.knowledge * self.perception
 
         print("Hi, I am household " + str(self.unique_id) + " and I produced this amount of waste:",
               str(round(self.produced_volume_updated, 2)) + " and knowledge", self.knowledge )
         return 0
 
-    def calculate_perception(self):
+    def initial_perception(self):
+        perception_range = (0, 0)
+
         if self.type == "Individual":
-            self.perception = random.uniform(0.4, 0.6)
+            perception_range = (0.4, 0.6)
         if self.type == "Retired":
-            self.perception = random.uniform(0.2, 0.5)
+            perception_range = (0.2, 0.5)
         if self.type == "Couple":
-            self.perception = random.uniform(0.5, 0.7)
+            perception_range = (0.5, 0.7)
         if self.type == "Family":
-            self.perception = random.uniform(0.3, 0.6)
+            perception_range = (0.3, 0.6)
 
+        self.perception = random.uniform(perception_range[0], perception_range[1])
 
-    def calculate_knowledge(self):
+    def initial_knowledge(self):
+        knowledge_range = (0, 0)
+
         if self.type == "Individual":
-            self.knowledge = random.uniform(0.4, 0.6)
+            knowledge_range = (0.4, 0.6)
         if self.type == "Retired":
-            self.knowledge = random.uniform(0.2, 0.5)
+            knowledge_range = (0.2, 0.5)
         if self.type == "Couple":
-            self.knowledge = random.uniform(0.5, 0.7)
+            knowledge_range = (0.5, 0.7)
         if self.type == "Family":
-            self.knowledge = random.uniform(0.3, 0.6)
+            knowledge_range = (0.3, 0.6)
 
-
+        self.knowledge = random.uniform(knowledge_range[0], knowledge_range[1])
 
 
 

@@ -32,34 +32,6 @@ from mesa.space import MultiGrid
 from matplotlib.animation import FuncAnimation
 from matplotlib import animation, rc, collections
 from IPython.display import HTML
-# class RandomActivationPerType(time.BaseScheduler):
-#     """ A scheduler which activates each agent once per step, in random order,
-#     with the order reshuffled every step.
-#
-#     This is equivalent to the NetLogo 'ask agents...' and is generally the
-#     default behavior for an ABM.
-#
-#     Assumes that all agents have a step(model) method.
-#
-#     """
-#     def __init__(self, modelx, sequence):
-#         self.model = modelx
-#         self.sequence = sequence
-#         self._agents = OrderedDict()
-#         self.steps = 0
-#
-#     def step(self) -> None:
-#         """ Executes the step of all agents, one at a time, in
-#         random order.
-#
-#         """
-#         for i in self.sequence:
-#
-#             for agent in self.agent_buffer(shuffled=True):
-#                 if agent.agent == i:
-#                     agent.step()
-#                 self.steps += 1
-#                 self.time += 1
 
 class RandomActivationPerType(time.BaseScheduler):
     """ A scheduler which activates each agent once per step, in random order,
@@ -87,24 +59,6 @@ class RandomActivationPerType(time.BaseScheduler):
         self.time += 1
 
 
-def waste(x, type):
-
-    if type == "Individual":
-        waste = 40 - 0.04 * x - math.exp(-0.01 * x) * math.sin(0.3 * x)
-
-    elif type == "Couple" or "Retired":
-        waste = (40 - 0.04 * x - math.exp(-0.01 * x) * math.sin(0.3 * x)) * 2
-
-    elif type == "Family":
-        waste = 40 - 0.04 * x - math.exp(-0.01 * x) * math.sin(0.3 * x) * 4
-
-    else:
-        print("error")
-        return 1
-
-    return waste
-
-
 
 class RecyclingModel(Model):
     "Model in which agents recycle"
@@ -124,13 +78,13 @@ class RecyclingModel(Model):
         for i in range(No_HH):
             type = random.choice(types_of_households)
             if type == "Individual":
-                household = Household(i, self, "Individual", "yes", "Rotterdam", produced_volume_base=2)
+                household = Household(i, self, "Individual", "yes", "Rotterdam")
             elif type =="Couple":
-                household = Household(i, self, "Couple", "yes", "Rotterdam", produced_volume_base=2)
+                household = Household(i, self, "Couple", "yes", "Rotterdam")
             elif type == "Family":
-                household = Household(i, self, "Family", "yes", "Rotterdam", produced_volume_base=2)
+                household = Household(i, self, "Family", "yes", "Rotterdam")
             elif type == "Retired":
-                household = Household(i, self, "Family", "yes", "Rotterdam", produced_volume_base=2)
+                household = Household(i, self, "Family", "yes", "Rotterdam")
 
             self.schedule.add(household)
 
