@@ -53,9 +53,7 @@ class Household(Agent):
 
     def step(self):
 
-        #self.produced_volume_base = waste(self.model.schedule.time, self.type)
-
-        self.produced_volume_updated = self.produced_volume_base * self.knowledge * self.perception
+        self.produced_volume_updated = waste(self.model.schedule.time, self.type) * self.knowledge * self.perception
 
         print("Hi, I am household " + str(self.unique_id) + " and I produced this amount of waste:",
               str(round(self.produced_volume_updated, 2)) + " and knowledge", self.knowledge )
