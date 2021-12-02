@@ -115,7 +115,9 @@ class RecyclingModel(Model):
         self.grid = MultiGrid(self.width, self.height, True)
         sequence = ["Municipality", "Household", "Company"]
         self.schedule = RandomActivationPerType(self)
-
+        self.waste_per_year = []
+        self.waste_this_year = 0
+        self.forced_step = 0
 
         types_of_households = ["Individual", "Couple", "Family", "Retired"]
 
@@ -151,6 +153,15 @@ class RecyclingModel(Model):
         for i in self.schedule.agents:
             if i.agent == "Household":
                 total_waste += i.produced_volume_updated
+        # Municipalities keeping track of yearly produced waste in order to calculate a new contract
+        for i in self.schedule.agents:
+            if i.agent == "Municipality" and self.forced_step % 12 != 0:
+                self.waste_this_year += total_waste
+            elif i.agent == "Municipality" and self.forced_step % 12 == 0 and self.forced_step != 0:
+                self.waste_per_year.append(self.waste_this_year)
+                self.waste_this_year = 0
+                print("List of waste collected every year: ", self.waste_per_year)
+
         for i in self.schedule.agents:
             # This only works if there is one recyclingcompany
             # TO DO: aggregate to more companies
@@ -159,11 +170,12 @@ class RecyclingModel(Model):
                 waste_collected = i.collected
         print("Total waste this round equals ", total_waste)
         print("Total collected", waste_collected)
+        self.forced_step += 1       # Quick fix to the step counting problem
 
 
 model = RecyclingModel(2, 1, 1)
 
-number_of_steps = 3
+number_of_steps = 40
 for i in range(number_of_steps):
    print("Step:", i)
    model.step()

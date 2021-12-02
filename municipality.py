@@ -31,6 +31,15 @@ class Municipality(Agent):
         self.contract = contract
         self.infrastructure = infrastructure
 
+    # Maybe a function that is needed later
+    # def renew_contract(self):
+    #     expected_waste_next_year = np.mean(self.model.waste_per_year)
+
+
     def step(self):
         print("Hi, I am municipality " + str(self.unique_id) + ".")
+
+        # New contract every 3 years
+        if self.model.forced_step % 36 == 0 and self.model.forced_step != 0:
+            print("I want a new contract for this amount of waste ", np.mean(self.model.waste_per_year[-3:]))
         return 0

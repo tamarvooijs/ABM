@@ -56,7 +56,7 @@ class Household(Agent):
         self.produced_volume_updated = self.produced_volume_base * self.knowledge * self.perception
 
         print("Hi, I am household " + str(self.unique_id) + " and I produced this amount of waste:",
-              str(round(self.produced_volume_updated, 2)) + "and knowledge", self.knowledge )
+              str(round(self.produced_volume_updated, 2)) + " and knowledge", self.knowledge )
         return 0
 
     def calculate_perception(self):
