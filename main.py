@@ -60,6 +60,8 @@ class RandomActivationPerType(time.BaseScheduler):
 
 
 
+
+
 class RecyclingModel(Model):
     "Model in which agents recycle"
 
@@ -73,20 +75,8 @@ class RecyclingModel(Model):
         self.waste_this_year = 0
         self.forced_step = 0
 
-        types_of_households = ["Individual", "Couple", "Family", "Retired"]
+        RecyclingModel.generate_households(self, No_HH)
 
-        for i in range(No_HH):
-            type = random.choice(types_of_households)
-            if type == "Individual":
-                household = Household(i, self, "Individual", "yes", "Rotterdam")
-            elif type =="Couple":
-                household = Household(i, self, "Couple", "yes", "Rotterdam")
-            elif type == "Family":
-                household = Household(i, self, "Family", "yes", "Rotterdam")
-            elif type == "Retired":
-                household = Household(i, self, "Family", "yes", "Rotterdam")
-
-            self.schedule.add(household)
 
         for i in range(No_Mun):
             municipality = Municipality(i+No_HH, self, 1, 100, 1, 3)
@@ -106,7 +96,7 @@ class RecyclingModel(Model):
         total_waste = 0
         for i in self.schedule.agents:
             if i.agent == "Household":
-                total_waste += i.produced_volume_updated
+                total_waste += i.produced_waste_volume_updated
         # Municipalities keeping track of yearly produced waste in order to calculate a new contract
         for i in self.schedule.agents:
             if i.agent == "Municipality" and self.forced_step % 12 != 0:
@@ -126,8 +116,23 @@ class RecyclingModel(Model):
         print("Total collected", waste_collected)
         self.forced_step += 1       # Quick fix to the step counting problem
 
+    def generate_households(self, number_of_households):
+        types_of_households = ["Individual", "Couple", "Family", "Retired_couple", "Retired_single"]
+        #TO DO: adapt this to literature
+        distribution_households = [0.35, 0.27, 0.33, 0.02, 0.04]
+        list_hh = []
 
-model = RecyclingModel(2, 1, 1)
+        for i in range(number_of_households):
+
+            type_hh = random.choices(types_of_households, distribution_households)[0]
+            household = Household(i, self, type_hh, "yes", "Rotterdam")
+            self.schedule.add(household)
+            list_hh.append(type_hh)
+        print("list", list_hh)
+        return
+
+
+model = RecyclingModel(100, 2, 1)
 
 number_of_steps = 40
 for i in range(number_of_steps):

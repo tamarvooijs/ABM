@@ -22,9 +22,9 @@ from IPython.display import HTML
 
 def waste(x, type):
 
-    if type == "Individual":
+    if type == "Individual" or "Retired_single":
         number_of_persons = 1
-    elif type == "Couple" or "Retired":
+    elif type == "Couple" or "Retired_couple":
         number_of_persons = 2
     elif type == "Family":
         number_of_persons = 4
@@ -46,17 +46,22 @@ class Household(Agent):
         self.type = type
         self.access = access
         self.municipality = municipality
-        self.produced_volume_base = waste(self.model.schedule.time, self.type)
-        self.produced_volume_updated = 0
+        self.produced_waste_volume_base = waste(self.model.schedule.time, self.type)
+        self.produced_waste_volume_updated = 0
+        self.factor_plastic = 0.08
+        self.produced_plastic = 0
+        self.recycled_plastic = 0
         Household.initial_knowledge(self)
         Household.initial_perception(self)
 
     def step(self):
 
-        self.produced_volume_updated = waste(self.model.schedule.time, self.type) * self.knowledge * self.perception
+        self.produced_waste_volume_updated = waste(self.model.schedule.time, self.type)
+        self.produced_plastic = self.produced_waste_volume_updated * self.factor_plastic
+        self.recycled_plastic = self.produced_plastic * self.knowledge * self.perception
 
         print("Hi, I am household " + str(self.unique_id) + " and I produced this amount of waste:",
-              str(round(self.produced_volume_updated, 2)) + " and knowledge", self.knowledge )
+              str(round(self.produced_waste_volume_updated, 2)) + " and this amount of plastic", self.produced_plastic, "of which I recycle", self.recycled_plastic)
         return 0
 
     def initial_perception(self):
@@ -69,7 +74,7 @@ class Household(Agent):
         if self.type == "Couple":
             perception_range = (0.5, 0.7)
         if self.type == "Family":
-            perception_range = (0.3, 0.6)
+            perception_range = (0.4, 0.7)
 
         self.perception = random.uniform(perception_range[0], perception_range[1])
 
@@ -78,7 +83,7 @@ class Household(Agent):
 
         if self.type == "Individual":
             knowledge_range = (0.4, 0.6)
-        if self.type == "Retired":
+        if self.type == "Retired_couple" or "Retired_single":
             knowledge_range = (0.2, 0.5)
         if self.type == "Couple":
             knowledge_range = (0.5, 0.7)
