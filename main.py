@@ -53,7 +53,7 @@ class RecyclingModel(Model):
         self.schedule = RandomActivationPerType(self)
         self.waste_per_year = []
         self.waste_this_year = 0
-        self.forced_step = 0
+
 
         RecyclingModel.generate_households(self, No_HH)
 
@@ -79,9 +79,9 @@ class RecyclingModel(Model):
                 total_waste += i.produced_waste_volume_updated
         # Municipalities keeping track of yearly produced waste in order to calculate a new contract
         for i in self.schedule.agents:
-            if i.agent == "Municipality" and self.forced_step % 12 != 0:
+            if i.agent == "Municipality" and self.schedule.time % 12 != 0:
                 self.waste_this_year += total_waste
-            elif i.agent == "Municipality" and self.forced_step % 12 == 0 and self.forced_step != 0:
+            elif i.agent == "Municipality" and self.schedule.time % 12 == 0 and self.schedule.time != 0:
                 self.waste_per_year.append(self.waste_this_year)
                 self.waste_this_year = 0
                 print("List of waste collected every year: ", self.waste_per_year)
@@ -94,7 +94,7 @@ class RecyclingModel(Model):
                 waste_collected = i.collected
         print("Total waste this round equals ", total_waste)
         print("Total collected", waste_collected)
-        self.forced_step += 1       # Quick fix to the step counting problem
+
 
     def generate_households(self, number_of_households):
         types_of_households = ["Individual", "Couple", "Family", "Retired_couple", "Retired_single"]

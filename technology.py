@@ -4,3 +4,8 @@ class Technology:
 
     def __init__(self):
         super().__init__(unique_id, model)
+        self.seperate = 1
+        self.throughput = 1000
+        self.new = False
+        self.costs = 500
+
