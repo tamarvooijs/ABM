@@ -1,29 +1,13 @@
-#library imports:
-#mesa
-from collections import OrderedDict
-
+# Libraries
 from municipality import Municipality
 from household import Household
 from recyclingcompany import RecyclingCompany
 from mesa import Agent, Model
-from mesa.datacollection import DataCollector
-#load all available schedulers
 import mesa.time as time
-import math
 import random
-# matplot lib for plotting, numpy for all sorts of useful math
-import matplotlib.pyplot as plt
-import numpy as np
-import seaborn as sns
-#basic python statistics
-import statistics as stat
-
-#import pandas
-import pandas as pd
-
-#import visualisation mesa
 from mesa.visualization.modules import CanvasGrid
 from mesa.visualization.ModularVisualization import ModularServer
+from mesa.datacollection import DataCollector
 
 #import space mesa
 from mesa.space import MultiGrid
@@ -59,9 +43,6 @@ class RandomActivationPerType(time.BaseScheduler):
         self.time += 1
 
 
-
-
-
 class RecyclingModel(Model):
     "Model in which agents recycle"
 
@@ -69,7 +50,6 @@ class RecyclingModel(Model):
         self.height = 10
         self.width = 10
         self.grid = MultiGrid(self.width, self.height, True)
-        sequence = ["Municipality", "Household", "Company"]
         self.schedule = RandomActivationPerType(self)
         self.waste_per_year = []
         self.waste_this_year = 0
@@ -118,7 +98,8 @@ class RecyclingModel(Model):
 
     def generate_households(self, number_of_households):
         types_of_households = ["Individual", "Couple", "Family", "Retired_couple", "Retired_single"]
-        #TO DO: adapt this to literature
+
+        # households are generated based on literature about the distribution of households in The Netherlands
         distribution_households = [0.35, 0.27, 0.33, 0.02, 0.04]
         list_hh = []
 

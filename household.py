@@ -4,24 +4,11 @@ from mesa.datacollection import DataCollector
 import mesa.time as time
 import math
 import random
-# matplot lib for plotting, numpy for all sorts of useful math
-import matplotlib.pyplot as plt
-import numpy as np
-import seaborn as sns
-#basic python statistics
-import statistics as stat
 
-#import pandas
-import pandas as pd
-
-# Required libraries for animation
-from matplotlib.animation import FuncAnimation
-from matplotlib import animation, rc, collections
-from IPython.display import HTML
 
 
 def waste(x, type):
-
+    """ To calculate the base waste of one type of a household"""
     if type == "Individual" or "Retired_single":
         number_of_persons = 1
     elif type == "Couple" or "Retired_couple":
