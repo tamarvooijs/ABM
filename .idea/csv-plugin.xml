@@ -24,6 +24,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\municipality.py">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\recyclingcompany.py">
           <value>
             <Attribute>

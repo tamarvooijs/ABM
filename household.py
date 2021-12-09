@@ -45,6 +45,7 @@ class Household(Agent):
 
         self.produced_waste_volume_updated = waste(self.model.schedule.time, self.type)
         self.produced_plastic = self.produced_waste_volume_updated * self.factor_plastic
+        #TODO: adjust knowledge: influences self.produced_plastic
         self.recycled_plastic = self.produced_plastic * self.knowledge * self.perception
 
         print("Hi, I am household " + str(self.unique_id) + " and I produced this amount of waste:",

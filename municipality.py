@@ -1,25 +1,9 @@
 #library imports:
 #mesa
 from mesa import Agent
-from mesa.datacollection import DataCollector
-#load all available schedulers
-import mesa.time as time
-import math
-import random
-# matplot lib for plotting, numpy for all sorts of useful math
-import matplotlib.pyplot as plt
+from recyclingcompany import Contract
 import numpy as np
-import seaborn as sns
-#basic python statistics
-import statistics as stat
-
-#import pandas
-import pandas as pd
-
-# Required libraries for animation
-from matplotlib.animation import FuncAnimation
-from matplotlib import animation, rc, collections
-from IPython.display import HTML
+import random
 
 
 class Municipality(Agent):
@@ -40,6 +24,20 @@ class Municipality(Agent):
         print("Hi, I am municipality " + str(self.unique_id) + ".")
 
         # New contract every 3 years
-        if self.model.schedule.time % 36 == 1 and self.model.schedule.time != 0:
+        if self.model.schedule.time % 36 == 1 and self.model.schedule.time != 1:
+            self.search_contract()
             print("I want a new contract for this amount of waste ", np.mean(self.model.waste_per_year[-3:]))
         return 0
+
+    def search_contract(self):
+
+        list_of_companies = []
+        for i in self.model.schedule.agents:
+            if i.agent == "Company":
+                # TODO: change model.waste_per_year to municipality average
+                if i.max_throughput > np.mean(self.model.waste_per_year[-3:]):
+                    list_of_companies.append(i)
+        #TODO: look at percentage that a municipality want to recycle
+        company = random.choice(list_of_companies)
+        self.contract = Contract(company, self)
+

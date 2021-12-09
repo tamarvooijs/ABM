@@ -1,7 +1,7 @@
 # Libraries
 from municipality import Municipality
 from household import Household
-from recyclingcompany import RecyclingCompany
+from recyclingcompany import RecyclingCompany, Contract
 from mesa import Agent, Model
 import mesa.time as time
 import random
@@ -113,7 +113,7 @@ class RecyclingModel(Model):
         return
 
 
-model = RecyclingModel(100, 2, 1)
+model = RecyclingModel(100, 1, 1)
 
 number_of_steps = 40
 for i in range(number_of_steps):
