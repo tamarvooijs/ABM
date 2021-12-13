@@ -46,7 +46,7 @@ class RandomActivationPerType(time.BaseScheduler):
 class RecyclingModel(Model):
     "Model in which agents recycle"
 
-    def __init__(self, No_HH, No_Mun, No_Comp):
+    def __init__(self, No_HH, No_Mun, No_Comp, Mun_Names, Comp_Names):
         self.height = 10
         self.width = 10
         self.grid = MultiGrid(self.width, self.height, True)
@@ -54,12 +54,12 @@ class RecyclingModel(Model):
         self.waste_per_year = []
         self.waste_this_year = 0
 
-
+        # TODO: Generate households per municipality
         RecyclingModel.generate_households(self, No_HH)
 
 
         for i in range(No_Mun):
-            municipality = Municipality(i+No_HH, self, 1, 100, 1, 3)
+            municipality = Municipality(i+No_HH, random.choice(Mun_Names), self, 1, 100, 1, 3)
             self.schedule.add(municipality)
 
             # Create municipalities on a random grid cell
@@ -68,7 +68,7 @@ class RecyclingModel(Model):
             self.grid.place_agent(municipality, (x, y))
 
         for i in range(No_Comp):
-            company = RecyclingCompany(i+No_Mun+No_HH, self, "technology 1", "contract 2", 50)
+            company = RecyclingCompany(i+No_Mun+No_HH, random.choice(Comp_Names), self, "technology 1", "contract 2", 50)
             self.schedule.add(company)
 
     def step(self):
@@ -77,13 +77,23 @@ class RecyclingModel(Model):
         for i in self.schedule.agents:
             if i.agent == "Household":
                 total_waste += i.produced_waste_volume_updated
+
+                # Add waste of household to corresponding municipality
+                for j in self.schedule.agents:
+                    if j.agent == "Municipality" and i.municipality == j.name:
+                        j.mun_waste_this_year += i.produced_waste_volume_updated
+
+
         # Municipalities keeping track of yearly produced waste in order to calculate a new contract
         for i in self.schedule.agents:
             if i.agent == "Municipality" and self.schedule.time % 12 != 0:
                 self.waste_this_year += total_waste
+
             elif i.agent == "Municipality" and self.schedule.time % 12 == 0 and self.schedule.time != 0:
                 self.waste_per_year.append(self.waste_this_year)
+                i.mun_waste_per_year.append(i.mun_waste_this_year)
                 self.waste_this_year = 0
+                i.mun_waste_this_year = 0
                 print("List of waste collected every year: ", self.waste_per_year)
 
         for i in self.schedule.agents:
@@ -113,7 +123,12 @@ class RecyclingModel(Model):
         return
 
 
-model = RecyclingModel(100, 1, 1)
+No_Mun = 1
+No_Comp = 1
+No_HH = 100
+Mun_Names = ["Rotterdam"]
+Comp_Names = ["Perpetual"]
+model = RecyclingModel(100, 1, 1, Mun_Names, Comp_Names)
 
 number_of_steps = 40
 for i in range(number_of_steps):

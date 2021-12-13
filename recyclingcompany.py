@@ -7,9 +7,10 @@ class Contract():
         self.municipality = Municipality
 
 class RecyclingCompany(Agent):
-    def __init__(self, unique_id, model, technology, contract, percentage_filtered):
+    def __init__(self, unique_id, name, model, technology, contract, percentage_filtered):
         super().__init__(unique_id, model)
         self.agent = "Company"
+        self.name = name
         self.technology = technology
         self.contract = contract
         self.percentage_filtered = percentage_filtered
