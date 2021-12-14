@@ -11,11 +11,15 @@ from mesa.datacollection import DataCollector
 
 #import space mesa
 from mesa.space import MultiGrid
+from mesa.space import Grid
 
 # Required libraries for animation
 from matplotlib.animation import FuncAnimation
 from matplotlib import animation, rc, collections
 from IPython.display import HTML
+
+import itertools
+
 
 class RandomActivationPerType(time.BaseScheduler):
     """ A scheduler which activates each agent once per step, in random order,
@@ -46,16 +50,25 @@ class RandomActivationPerType(time.BaseScheduler):
 class RecyclingModel(Model):
     "Model in which agents recycle"
 
+<<<<<<< Updated upstream
     def __init__(self, No_HH, No_Mun, No_Comp, Mun_Names, Comp_Names):
         self.height = 10
         self.width = 10
+=======
+    def __init__(self, No_HH, No_Mun, No_Comp):
+        self.height = 5
+        self.width = 5
+>>>>>>> Stashed changes
         self.grid = MultiGrid(self.width, self.height, True)
         self.schedule = RandomActivationPerType(self)
         self.waste_per_year = []
         self.waste_this_year = 0
 
+<<<<<<< Updated upstream
         # TODO: Generate households per municipality
         RecyclingModel.generate_households(self, No_HH)
+=======
+>>>>>>> Stashed changes
 
 
         for i in range(No_Mun):
@@ -63,13 +76,14 @@ class RecyclingModel(Model):
             self.schedule.add(municipality)
 
             # Create municipalities on a random grid cell
-            x = self.random.randrange(self.grid.width)
-            y = self.random.randrange(self.grid.height)
-            self.grid.place_agent(municipality, (x, y))
+            z = self.grid.find_empty()
+            self.grid.place_agent(municipality,z)
 
         for i in range(No_Comp):
             company = RecyclingCompany(i+No_Mun+No_HH, random.choice(Comp_Names), self, "technology 1", "contract 2", 50)
             self.schedule.add(company)
+
+        RecyclingModel.generate_households(self, No_HH)
 
     def step(self):
         self.schedule.step()
@@ -118,10 +132,23 @@ class RecyclingModel(Model):
             type_hh = random.choices(types_of_households, distribution_households)[0]
             household = Household(i, self, type_hh, "yes", "Rotterdam")
             self.schedule.add(household)
+
+            # Create households on an empty cell:
+            self.munlist = set(itertools.product(*(range(self.width), range(self.height))))
+            for i in self.munlist:
+                if self.grid.is_cell_empty(i):
+                    self.munlist.remove(i)
+                else:
+                    pass
+            x = self.random.randrange(self.munlist.width)
+            y = self.random.randrange(self.munlist.height)
+            self.grid.place_agent(household, (x, y))
+
             list_hh.append(type_hh)
         print("list", list_hh)
         return
 
+<<<<<<< Updated upstream
 
 No_Mun = 1
 No_Comp = 1
@@ -129,13 +156,17 @@ No_HH = 100
 Mun_Names = ["Rotterdam"]
 Comp_Names = ["Perpetual"]
 model = RecyclingModel(100, 1, 1, Mun_Names, Comp_Names)
+=======
+""""
+model = RecyclingModel(100, 1, 1)
+>>>>>>> Stashed changes
 
 number_of_steps = 40
 for i in range(number_of_steps):
    print("Step:", i)
    model.step()
 
-
+"""
 
 
 
