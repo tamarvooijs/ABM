@@ -50,25 +50,14 @@ class RandomActivationPerType(time.BaseScheduler):
 class RecyclingModel(Model):
     "Model in which agents recycle"
 
-<<<<<<< Updated upstream
+
     def __init__(self, No_HH, No_Mun, No_Comp, Mun_Names, Comp_Names):
         self.height = 10
         self.width = 10
-=======
-    def __init__(self, No_HH, No_Mun, No_Comp):
-        self.height = 5
-        self.width = 5
->>>>>>> Stashed changes
         self.grid = MultiGrid(self.width, self.height, True)
         self.schedule = RandomActivationPerType(self)
         self.waste_per_year = []
         self.waste_this_year = 0
-
-<<<<<<< Updated upstream
-        # TODO: Generate households per municipality
-        RecyclingModel.generate_households(self, No_HH)
-=======
->>>>>>> Stashed changes
 
 
         for i in range(No_Mun):
@@ -83,6 +72,7 @@ class RecyclingModel(Model):
             company = RecyclingCompany(i+No_Mun+No_HH, random.choice(Comp_Names), self, "technology 1", "contract 2", 50)
             self.schedule.add(company)
 
+#TODO: Generate households per municipality
         RecyclingModel.generate_households(self, No_HH)
 
     def step(self):
@@ -134,39 +124,18 @@ class RecyclingModel(Model):
             self.schedule.add(household)
 
             # Create households on an empty cell:
-            self.munlist = set(itertools.product(*(range(self.width), range(self.height))))
-            for i in self.munlist:
-                if self.grid.is_cell_empty(i):
-                    self.munlist.remove(i)
-                else:
-                    pass
-            x = self.random.randrange(self.munlist.width)
-            y = self.random.randrange(self.munlist.height)
+            x = self.random.randrange(self.grid.width)
+            y = self.random.randrange(self.grid.height)
             self.grid.place_agent(household, (x, y))
+
 
             list_hh.append(type_hh)
         print("list", list_hh)
         return
 
-<<<<<<< Updated upstream
 
-No_Mun = 1
-No_Comp = 1
-No_HH = 100
-Mun_Names = ["Rotterdam"]
-Comp_Names = ["Perpetual"]
-model = RecyclingModel(100, 1, 1, Mun_Names, Comp_Names)
-=======
-""""
-model = RecyclingModel(100, 1, 1)
->>>>>>> Stashed changes
 
-number_of_steps = 40
-for i in range(number_of_steps):
-   print("Step:", i)
-   model.step()
 
-"""
 
 
 

@@ -23,9 +23,17 @@ from IPython.display import HTML
 
 from model import RecyclingModel
 
-model = RecyclingModel(2, 1, 1)
+from main import RecyclingModel
 
-number_of_steps = 3
+No_Mun = 1
+No_Comp = 1
+No_HH = 100
+Mun_Names = ["Rotterdam"]
+Comp_Names = ["Perpetual"]
+model = RecyclingModel(100, 1, 1, Mun_Names, Comp_Names)
+
+
+number_of_steps = 40
 for i in range(number_of_steps):
-    print("Step:", i)
-    model.step()
+   print("Step:", i)
+   model.step()
