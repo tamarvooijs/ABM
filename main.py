@@ -122,10 +122,10 @@ class RecyclingModel(Model):
             # Create municipalities on a random grid cell
             z = self.grid.find_empty()
             self.grid.place_agent(municipality,z)
-            RecyclingModel.generate_households(self, municipality.number_of_households)
+            RecyclingModel.generate_households(self, municipality.number_of_households, i)
 
 
-    def generate_households(self, number_of_households):
+    def generate_households(self, number_of_households, municipality):
         types_of_households = ["Individual", "Couple", "Family", "Retired_couple", "Retired_single"]
 
         # households are generated based on literature about the distribution of households in The Netherlands
@@ -135,7 +135,7 @@ class RecyclingModel(Model):
         for i in range(number_of_households):
 
             type_hh = random.choices(types_of_households, distribution_households)[0]
-            household = Household(self.num_agents, self, type_hh, "yes", "Rotterdam")
+            household = Household(self.num_agents, self, type_hh, "yes", municipality)
             self.num_agents += 1
             self.schedule.add(household)
 

@@ -48,8 +48,7 @@ class Household(Agent):
         #TODO: adjust knowledge: influences self.produced_plastic
         self.recycled_plastic = self.produced_plastic * self.knowledge * self.perception
 
-        print("Hi, I am household " + str(self.unique_id) + " and I produced this amount of waste:",
-              str(round(self.produced_waste_volume_updated, 2)) + " and this amount of plastic", self.produced_plastic, "of which I recycle", self.recycled_plastic)
+        print("Hi, I am household " + str(self.unique_id) + " and I belong to " + self.municipality)
         return 0
 
     def initial_perception(self):
