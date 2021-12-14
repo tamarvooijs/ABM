@@ -28,9 +28,9 @@ from main import RecyclingModel
 No_Mun = 1
 No_Comp = 1
 No_HH = 100
-Mun_Names = ["Rotterdam"]
+
 Comp_Names = ["Perpetual"]
-model = RecyclingModel(100, 1, 1, Mun_Names, Comp_Names)
+model = RecyclingModel(1, Comp_Names)
 
 
 number_of_steps = 40

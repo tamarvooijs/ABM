@@ -7,14 +7,14 @@ import random
 
 
 class Municipality(Agent):
-    def __init__(self, unique_id, name, model, number_of_households, budget, contract, infrastructure):
+    def __init__(self, unique_id, model, number_of_households):
         super().__init__(unique_id, model)
         self.agent = "Municipality"
-        self.name = name
+        self.name = unique_id
         self.number_of_households = number_of_households
-        self.budget = budget
-        self.contract = contract
-        self.infrastructure = infrastructure
+        self.budget = 0
+        self.contract = None
+        self.infrastructure = True
         self.mun_waste_this_year = 0
         self.mun_waste_per_year = []
 
@@ -41,7 +41,6 @@ class Municipality(Agent):
 
         for i in self.model.schedule.agents:
             if i.agent == "Company":
-                # TODO: change model.waste_per_year to municipality average
                 if i.max_throughput > np.mean(self.mun_waste_per_year[-3:]):
                     list_of_companies.append(i)
                 if i.max_throughput > largest_throughput:
@@ -52,6 +51,6 @@ class Municipality(Agent):
         else:
             company = random.choice(list_of_companies)
         #TODO: look at percentage that a municipality want to recycle
-        
+
         self.contract = Contract(company, self)
 

@@ -51,29 +51,20 @@ class RecyclingModel(Model):
     "Model in which agents recycle"
 
 
-    def __init__(self, No_HH, No_Mun, No_Comp, Mun_Names, Comp_Names):
-        self.height = 10
-        self.width = 10
+    def __init__(self, No_Comp, Comp_Names):
+        self.height = 1000
+        self.width = 1000
         self.grid = MultiGrid(self.width, self.height, True)
         self.schedule = RandomActivationPerType(self)
         self.waste_per_year = []
         self.waste_this_year = 0
+        self.num_agents = 0
 
 
-        for i in range(No_Mun):
-            municipality = Municipality(i+No_HH, random.choice(Mun_Names), self, 1, 100, 1, 3)
-            self.schedule.add(municipality)
+        self.generate_municipalities()
 
-            # Create municipalities on a random grid cell
-            z = self.grid.find_empty()
-            self.grid.place_agent(municipality,z)
+        self.generate_companies()
 
-        for i in range(No_Comp):
-            company = RecyclingCompany(i+No_Mun+No_HH, random.choice(Comp_Names), self, "technology 1", "contract 2", 50)
-            self.schedule.add(company)
-
-#TODO: Generate households per municipality
-        RecyclingModel.generate_households(self, No_HH)
 
     def step(self):
         self.schedule.step()
@@ -84,7 +75,7 @@ class RecyclingModel(Model):
 
                 # Add waste of household to corresponding municipality
                 for j in self.schedule.agents:
-                    if j.agent == "Municipality" and i.municipality == j.name:
+                    if j.agent == "Municipality" and i.municipality == j.unique_id:
                         j.mun_waste_this_year += i.produced_waste_volume_updated
 
 
@@ -110,6 +101,30 @@ class RecyclingModel(Model):
         print("Total collected", waste_collected)
 
 
+    def generate_companies(self):
+        Company_Names = ["alfa", "beta", "gamma"]
+        for i in range(len(Company_Names)):
+            company = RecyclingCompany(Company_Names[i], self, "technology 1", "contract 2", 50)
+            self.schedule.add(company)
+            self.num_agents += 1
+
+
+    def generate_municipalities(self):
+
+        Mun_Names = {"Rotterdam": 10, "Vlaardingen": 5, "Schiedam": 7}
+
+        for i in Mun_Names.keys():
+
+            municipality = Municipality( i, self, Mun_Names[i])
+            self.schedule.add(municipality)
+            self.num_agents += 1
+
+            # Create municipalities on a random grid cell
+            z = self.grid.find_empty()
+            self.grid.place_agent(municipality,z)
+            RecyclingModel.generate_households(self, municipality.number_of_households)
+
+
     def generate_households(self, number_of_households):
         types_of_households = ["Individual", "Couple", "Family", "Retired_couple", "Retired_single"]
 
@@ -120,7 +135,8 @@ class RecyclingModel(Model):
         for i in range(number_of_households):
 
             type_hh = random.choices(types_of_households, distribution_households)[0]
-            household = Household(i, self, type_hh, "yes", "Rotterdam")
+            household = Household(self.num_agents, self, type_hh, "yes", "Rotterdam")
+            self.num_agents += 1
             self.schedule.add(household)
 
             # Create households on an empty cell:
