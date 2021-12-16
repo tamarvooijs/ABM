@@ -2,6 +2,7 @@
 from municipality import Municipality
 from household import Household
 from recyclingcompany import RecyclingCompany, Contract
+from technology import Technology
 from mesa import Agent, Model
 import mesa.time as time
 import random
@@ -86,6 +87,7 @@ class RecyclingModel(Model):
 
             elif i.agent == "Municipality" and self.schedule.time % 12 == 0 and self.schedule.time != 0:
                 self.waste_per_year.append(self.waste_this_year)
+                #TODO: put this is municipality, makes more sense
                 i.mun_waste_per_year.append(i.mun_waste_this_year)
                 self.waste_this_year = 0
                 i.mun_waste_this_year = 0
@@ -104,7 +106,7 @@ class RecyclingModel(Model):
     def generate_companies(self):
         Company_Names = ["alfa", "beta", "gamma"]
         for i in range(len(Company_Names)):
-            company = RecyclingCompany(Company_Names[i], self, "technology 1", "contract 2", 50)
+            company = RecyclingCompany(Company_Names[i], self, "contract 2", 50)
             self.schedule.add(company)
             self.num_agents += 1
 
