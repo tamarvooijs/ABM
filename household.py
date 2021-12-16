@@ -44,9 +44,10 @@ class Household(Agent):
     def step(self):
 
         self.produced_waste_volume_updated = waste(self.model.schedule.time, self.type)
-        self.produced_plastic = self.produced_waste_volume_updated * self.factor_plastic
-        #TODO: adjust knowledge: influences self.produced_plastic
-        self.recycled_plastic = self.produced_plastic * self.knowledge * self.perception
+        # perception influences the plastic that is separated
+        self.produced_plastic = self.produced_waste_volume_updated * self.factor_plastic * self.perception
+        # knowledge influences the plastic that is valuable
+        self.recycled_plastic = self.produced_plastic * self.knowledge
 
         print("Hi, I am household " + str(self.unique_id) + " and I belong to " + self.municipality)
         return 0

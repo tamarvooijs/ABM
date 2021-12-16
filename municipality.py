@@ -31,6 +31,15 @@ class Municipality(Agent):
         if self.model.schedule.time % 36 == 1 and self.model.schedule.time != 1:
             self.search_contract()
             print("I want a new contract for this amount of waste ", np.mean(self.model.waste_per_year[-3:]))
+
+        elif self.model.schedule.time == 0:
+            list_companies = []
+            for i in self.model.schedule.agents:
+                if i.agent == "Company":
+                    list_companies.append(i)
+
+            company = random.choice(list_companies)
+            self.contract = Contract(company, self)
         return 0
 
     def search_contract(self):
