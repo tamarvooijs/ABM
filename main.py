@@ -135,7 +135,7 @@ class RecyclingModel(Model):
         for i in range(number_of_households):
 
             type_hh = random.choices(types_of_households, distribution_households)[0]
-            household = Household(self.num_agents, self, type_hh, "yes", municipality)
+            household = Household((municipality, i), self, type_hh, "yes", municipality)
             self.num_agents += 1
             self.schedule.add(household)
 
