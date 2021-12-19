@@ -8,14 +8,15 @@ class Contract():
         self.company = Company
         self.municipality = Municipality
 
+
 class RecyclingCompany(Agent):
-    def __init__(self, unique_id, model,  contract, percentage_filtered):
+    def __init__(self, unique_id, model, percentage_filtered):
         super().__init__(unique_id, model)
         self.agent = "Company"
         self.model = model
         self.technology = Technology("T" + unique_id, self.model)
         # make list of contracts here instead of one contract
-        self.contract = contract
+        self.contracts = []
         self.percentage_filtered = percentage_filtered
         self.collected = 0
         self.max_throughput = math.inf
@@ -32,10 +33,13 @@ class RecyclingCompany(Agent):
 
 
 
-        print("Hi, I am company " + str(self.unique_id) + " and I have Technology" + str(self.technology.version))
+        print("Hi, I am company " + str(self.unique_id) + " and I have contracts" + str(self.contracts))
         return 0
 
     def calculate_profits(self):
+        for i in self.contracts:
+
+
         #TODO:
         # calculate the throughput here
         # by looping over contracts
