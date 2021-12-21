@@ -30,7 +30,7 @@ No_Comp = 1
 No_HH = 100
 
 Comp_Names = ["Perpetual"]
-model = RecyclingModel(1, Comp_Names)
+model = RecyclingModel()
 
 
 number_of_steps = 240

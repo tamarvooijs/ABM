@@ -52,10 +52,10 @@ class RecyclingModel(Model):
     "Model in which agents recycle"
 
 
-    def __init__(self, No_Comp, Comp_Names):
+    def __init__(self):
         self.height = 50
         self.width = 50
-        self.grid = MultiGrid(self.width, self.height, True)
+        self.grid = MultiGrid(self.width, self.height, False)
         self.schedule = RandomActivationPerType(self)
         self.waste_per_year = []
         self.waste_this_year = 0
@@ -111,6 +111,8 @@ class RecyclingModel(Model):
         for i in range(len(Company_Names)):
             company = RecyclingCompany(Company_Names[i], self, 50)
             self.schedule.add(company)
+            o = self.grid.find_empty()
+            self.grid.place_agent(company, o)
             self.num_agents += 1
 
 
@@ -125,9 +127,38 @@ class RecyclingModel(Model):
             self.num_agents += 1
 
             # Create municipalities on a random grid cell
+            size = municipality.number_of_households * 2
+
+            z = self.grid.find_empty()
+            self.grid.place_agent(municipality, z)
+
+            self.citycells[municipality.name] = []
+            self.citycells[municipality.name].append(z)
+
+            for j in range(int(size)):
+                neighbors = []
+                while not neighbors:
+                    u = random.randrange(0, len(self.citycells[municipality.name]))
+                    neighbors = self.grid.get_neighborhood(self.citycells[municipality.name][u], False)
+
+                    print(neighbors)
+
+                    for k in neighbors:
+                        if k in self.citycells[municipality.name]:
+                            neighbors.remove(k)
+
+                else:
+                    y = random.choice(neighbors)
+                    self.citycells[municipality.name].append(y)
+                    self.grid.place_agent(municipality, y)
+
             z = self.grid.find_empty()
             self.grid.place_agent(municipality,z)
+
+
             RecyclingModel.generate_households(self, municipality.number_of_households, i)
+
+
 
 
     def generate_households(self, number_of_households, municipality):
