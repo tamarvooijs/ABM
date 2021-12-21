@@ -45,6 +45,7 @@ class Municipality(Agent):
 
             company = random.choice(list_companies)
             self.contract = Contract(company, self)
+            company.contracts.append(self.contract)
         return 0
 
     def search_contract(self):
@@ -55,10 +56,10 @@ class Municipality(Agent):
 
         for i in self.model.schedule.agents:
             if i.agent == "Company":
-                if i.max_throughput > np.mean(self.mun_waste_per_year[-3:]):
+                if i.technology.throughput > np.mean(self.mun_waste_per_year[-3:]):
                     list_of_companies.append(i)
-                if i.max_throughput > largest_throughput:
-                    largest_throughput = i.max_throughput
+                if i.technology.throughput > largest_throughput:
+                    largest_throughput = i.technology.throughput
                     comp_largest_throughput = i
         if not list_of_companies:
             company = comp_largest_throughput

@@ -53,13 +53,18 @@ class RecyclingModel(Model):
 
 
     def __init__(self, No_Comp, Comp_Names):
-        self.height = 1000
-        self.width = 1000
+        self.height = 50
+        self.width = 50
         self.grid = MultiGrid(self.width, self.height, True)
         self.schedule = RandomActivationPerType(self)
         self.waste_per_year = []
         self.waste_this_year = 0
         self.num_agents = 0
+        self.exogenous_price = 0.25
+        self.running = True
+        self.citycells = {}
+
+
 
 
         self.generate_municipalities()
@@ -139,15 +144,21 @@ class RecyclingModel(Model):
             self.num_agents += 1
             self.schedule.add(household)
 
-            # Create households on an empty cell:
-            x = self.random.randrange(self.grid.width)
-            y = self.random.randrange(self.grid.height)
-            self.grid.place_agent(household, (x, y))
+            MyCells = []
+
+            for j in self.citycells.keys():
+                if household.municipality == j:
+                    MyCells.append(self.citycells[j])
+                    MyCells = MyCells[0]
+                    y = self.random.choice(MyCells)
+                    self.grid.place_agent(household, y)
 
 
             list_hh.append(type_hh)
         print("list", list_hh)
         return
+
+
 
 
 

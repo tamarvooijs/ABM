@@ -7,16 +7,12 @@ class Technology:
         self.model = model
         self.version = 0
         self.last_renewed = 0
-        self.percentage = 1
-        self.throughput = 1000
+        self.percentage = 0.5
+        self.throughput = 3000
         self.new = False
         self.costs = 500
 
-    def update_technology(self):
-        self.version += 1
-        self.throughput = (self.throughput * 1.1)/self.throughput
-        self.percentage = self.percentage * 1.1
-        self.last_renewed = 0
+
 
 
 
