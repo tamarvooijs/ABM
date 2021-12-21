@@ -38,7 +38,7 @@ class RecyclingCompany(Agent):
 
     def calculate_profits(self):
         for i in self.contracts:
-
+    
 
         #TODO:
         # calculate the throughput here
