@@ -27,10 +27,15 @@ class Municipality(Agent):
     def step(self):
         print("Hi, I am municipality " + str(self.unique_id) + ".")
 
+        # Store waste for every year in mun_waste_per_year
+        if self.model.schedule.time % 12 == 0 and self.model.schedule.time != 0:
+            self.mun_waste_per_year.append(self.mun_waste_this_year)
+            self.mun_waste_this_year = 0
+
         # New contract every 3 years
         if self.model.schedule.time % 36 == 1 and self.model.schedule.time != 1:
             self.search_contract()
-            print("I want a new contract for this amount of waste ", np.mean(self.model.waste_per_year[-3:]))
+            print("I want a new contract for this amount of waste ", np.mean(self.mun_waste_per_year[-3:]))
 
         elif self.model.schedule.time == 0:
             list_companies = []
@@ -62,4 +67,7 @@ class Municipality(Agent):
         #TODO: look at percentage that a municipality want to recycle
 
         self.contract = Contract(company, self)
+        company.contracts.append(self.contract)
+
+
 
