@@ -19,32 +19,51 @@ class RecyclingCompany(Agent):
         self.contracts = []
         self.percentage_filtered = percentage_filtered
         self.collected = 0
-        self.max_throughput = math.inf
-        self.budget = 1000
+        self.profit = 0.0
+        self.budget = 0.0
 
     def step(self):
 
         if self.model.schedule.time % 12 != 0:
 
             self.technology.last_renewed += 1
-            if bernoulli.rvs(size=1, p= self.technology.last_renewed/10):
-                self.technology.update_technology()
-                self.budget -= self.technology.costs
+            # In this case, technologies have a constant price
+            if self.budget > self.technology.costs:
+                if self.technology.last_renewed/10 < 1:
+                    p = self.technology.last_renewed/10
+                else:
+                    p=1
+                if bernoulli.rvs(size=1, p= p):
+                    print("update")
+                    self.technology.version += 1
+                    self.technology.throughput = self.technology.throughput * 1.1
+                    self.technology.percentage = 0.5+ (self.technology.percentage/(math.sqrt((self.technology.percentage * self.technology.percentage)+1)))/2
+                    self.technology.last_renewed = 0
+
+
+                    self.budget -= self.technology.costs
+
+        if self.model.schedule.time % 12 == 0 and self.model.schedule.time != 0:
+            self.calculate_profits()
+            self.budget += self.profit
+            print("my budget is ", self.unique_id, self.budget)
 
 
 
-        print("Hi, I am company " + str(self.unique_id) + " and I have contracts" + str(self.contracts))
+        print("Hi, I am company " + str(self.unique_id) + " and my contracts are" + str(self.contracts))
         return 0
 
     def calculate_profits(self):
-        for i in self.contracts:
-    
+        total_amount = 0
 
-        #TODO:
-        # calculate the throughput here
-        # by looping over contracts
-        # and calculating the total waste in all municipalities
-        # check whether throughput exceeds the max throughput, throughput = min(max throughput, thhroughput)
-        # multiply throughput with factor of earnings
+        for i in self.contracts:
+            total_amount += i.municipality.mun_waste_per_year[-1]
+        print("Amount:", total_amount)
+        if total_amount > self.technology.throughput:
+            total_amount = self.technology.throughput
+        self.profit = total_amount * self.model.exogenous_price
+        print("Amount",  total_amount)
+        print("Percentage", self.unique_id, self.technology.percentage)
+        #TODO
         # use number in decision to invest in technologies.
-        self.waste_per_year.append(self.waste_this_year)
+

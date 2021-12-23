@@ -1,23 +1,45 @@
-from mesa.visualization.modules import CanvasGrid
 from mesa.visualization.ModularVisualization import ModularServer
-
+from mesa.visualization.modules import CanvasGrid
 from main import RecyclingModel
 
 def agent_portrayal(agent):
-    portrayal = {"Shape": "circle",
-                 "Filled": "true",
-                 "Layer": 0,
-                 "Color": "red",
-                 "r": 2}
+    if agent.agent == "Household":
+        if agent.type == "Individual":
+            portrayal = {"Shape": "circle",
+                         "Filled": "true",
+                         "Layer": 0,
+                         "Color": "red",
+                         "r": 0.5}
+        else:
+            portrayal = {"Shape": "circle",
+                         "Filled": "true",
+                         "Layer": 0,
+                         "Color": "purple",
+                         "r": 0.5}
+    elif agent.agent == "Municipality":
+        portrayal = {"Shape": "rect",
+                     "Filled": "true",
+                     "Layer": 0,
+                     "Color": "blue",
+                     "w":1,
+                     "h":1}
+    elif agent.agent == "Company":
+        portrayal = {"Shape": "circle",
+                     "Filled": "true",
+                     "Layer": 0,
+                     "Color": "grey",
+                     "r": 2}
     return portrayal
 
-Mun_Names = ["Rotterdam"]
+
+Mun_Names = ["Rotterdam", "Den Haag"]
 Comp_Names = ["Perpetual"]
 
-grid = CanvasGrid(agent_portrayal, 5, 5, 500, 500)
+
+grid = CanvasGrid(agent_portrayal, 50, 50, 500, 500)
 server = ModularServer(RecyclingModel,
                        [grid],
                        "Recycling Model",
-                       {"No_HH":5, "No_Mun":1, "No_Comp":2, "Mun_Names":Mun_Names, "Comp_Names":Comp_Names})
+                       {})
 server.port = 8521 # The default
 server.launch()
