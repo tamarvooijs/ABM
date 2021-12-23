@@ -1,5 +1,5 @@
 from mesa.visualization.ModularVisualization import ModularServer
-from mesa.visualization.modules import CanvasGrid
+from mesa.visualization.modules import CanvasGrid, ChartModule
 from main import RecyclingModel
 
 def agent_portrayal(agent):
@@ -37,8 +37,19 @@ Comp_Names = ["Perpetual"]
 
 
 grid = CanvasGrid(agent_portrayal, 50, 50, 500, 500)
+
+chart_waste = ChartModule(
+    [
+        {"Label": "Waste Rotterdam", "Color": "green"},
+        {"Label": "Waste Vlaardingen", "Color": "red"},
+        {"Label": "Waste Schiedam", "Color": "yellow"},
+    ],
+    canvas_height= 300,
+    data_collector_name="datacollector_waste"
+)
+
 server = ModularServer(RecyclingModel,
-                       [grid],
+                       [grid, chart_waste],
                        "Recycling Model",
                        {})
 server.port = 8521 # The default
