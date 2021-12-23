@@ -64,16 +64,21 @@ class RecyclingModel(Model):
         self.running = True
         self.citycells = {}
 
-
-
-
         self.generate_municipalities()
 
         self.generate_companies()
 
+        self.datacollector_waste = DataCollector({
+            "Waste Rotterdam": lambda self: self.waste_count_municipality("Rotterdam"),
+            "Waste Vlaardingen": lambda self: self.waste_count_municipality("Vlaardingen"),
+            "Waste Schiedam": lambda self: self.waste_count_municipality("Schiedam")
+        })
+
+        self.datacollector_waste.collect((self))
 
     def step(self):
         self.schedule.step()
+        self.datacollector_waste.collect(self)
         total_waste = 0
         for i in self.schedule.agents:
             if i.agent == "Household":
@@ -152,9 +157,6 @@ class RecyclingModel(Model):
                     self.citycells[municipality.name].append(y)
                     self.grid.place_agent(municipality, y)
 
-            z = self.grid.find_empty()
-            self.grid.place_agent(municipality,z)
-
 
             RecyclingModel.generate_households(self, municipality.number_of_households, i)
 
@@ -189,7 +191,9 @@ class RecyclingModel(Model):
         print("list", list_hh)
         return
 
-
+    def waste_count_municipality(model, municipality):
+        municipality_waste = sum([agent.produced_waste_volume_updated for agent in model.schedule.agents if agent.agent=="Household" and agent.municipality == municipality])
+        return municipality_waste
 
 
 
