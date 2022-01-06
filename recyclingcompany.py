@@ -15,10 +15,10 @@ class RecyclingCompany(Agent):
         self.agent = "Company"
         self.model = model
         self.technology = Technology("T" + unique_id, self.model)
-        # make list of contracts here instead of one contract
         self.contracts = []
         self.percentage_filtered = percentage_filtered
-        self.collected = 0
+        self.average_percentage = []
+        self.collected_over_years = []
         self.profit = 0.0
         self.budget = 0.0
 
@@ -61,9 +61,10 @@ class RecyclingCompany(Agent):
         print("Amount:", total_amount)
         if total_amount > self.technology.throughput:
             total_amount = self.technology.throughput
+        self.average_percentage = total_amount
         self.profit = total_amount * self.model.exogenous_price
         print("Amount",  total_amount)
         print("Percentage", self.unique_id, self.technology.percentage)
-        #TODO
+
         # use number in decision to invest in technologies.
 
