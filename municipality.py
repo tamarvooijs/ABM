@@ -17,11 +17,9 @@ class Municipality(Agent):
         self.infrastructure = True
         self.mun_waste_this_year = 0
         self.mun_waste_per_year = []
+        # TODO: implement policies as numbers/names that are either True or False
+        self.policies = {}
 
-
-    # Maybe a function that is needed later
-    # def renew_contract(self):
-    #     expected_waste_next_year = np.mean(self.model.waste_per_year)
 
 
     def step(self):
@@ -65,7 +63,7 @@ class Municipality(Agent):
             company = comp_largest_throughput
         else:
             company = random.choice(list_of_companies)
-        #TODO: look at percentage that a municipality want to recycle
+
 
         self.contract = Contract(company, self)
         company.contracts.append(self.contract)

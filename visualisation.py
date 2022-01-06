@@ -38,7 +38,7 @@ Comp_Names = ["Perpetual"]
 
 grid = CanvasGrid(agent_portrayal, 50, 50, 500, 500)
 
-chart_waste = ChartModule(
+chart_waste_total = ChartModule(
     [
         {"Label": "Waste Rotterdam", "Color": "green"},
         {"Label": "Waste Vlaardingen", "Color": "red"},
@@ -48,8 +48,18 @@ chart_waste = ChartModule(
     data_collector_name="datacollector_waste"
 )
 
+chart_waste_plastic = ChartModule(
+    [
+        {"Label": "Plastic waste Rotterdam", "Color": "green"},
+        {"Label": "Plastic waste Vlaardingen", "Color": "red"},
+        {"Label": "Plastic waste Schiedam", "Color": "yellow"},
+    ],
+    canvas_height= 300,
+    data_collector_name="datacollector_waste"
+)
+
 server = ModularServer(RecyclingModel,
-                       [grid, chart_waste],
+                       [grid, chart_waste_total, chart_waste_plastic],
                        "Recycling Model",
                        {})
 server.port = 8521 # The default
