@@ -72,9 +72,10 @@ class RecyclingModel(Model):
             "Waste Rotterdam": lambda self: self.waste_count_municipality("Rotterdam"),
             "Waste Vlaardingen": lambda self: self.waste_count_municipality("Vlaardingen"),
             "Waste Schiedam": lambda self: self.waste_count_municipality("Schiedam"),
-            "Plastic waste Rotterdam": lambda self: self.plastic_waste_municipality("Rotterdam"),
-            "Plastic waste Vlaardingen": lambda self: self.plastic_waste_municipality("Vlaardingen"),
-            "Plastic waste Schiedam": lambda self: self.plastic_waste_municipality("Schiedam")
+            "Recycled plastic waste Rotterdam": lambda self: self.recycled_plastic_waste_municipality("Rotterdam"),
+            "Recycled plastic waste Vlaardingen": lambda self: self.recycled_plastic_waste_municipality("Vlaardingen"),
+            "Recycled plastic waste Schiedam": lambda self: self.recycled_plastic_waste_municipality("Schiedam"),
+            "Percentage recycled Rotterdam": lambda self: self.waste_count_municipality("Rotterdam")/self.recycled_plastic_waste_municipality("Rotterdam") if self.schedule.time != 0 else 0
         })
 
         self.datacollector_waste.collect((self))
@@ -188,13 +189,18 @@ class RecyclingModel(Model):
         return
 
     def waste_count_municipality(model, municipality):
-        municipality_waste = sum([agent.recycled_plastic for agent in model.schedule.agents if agent.agent=="Household" and agent.municipality == municipality])
+        municipality_waste = sum([agent.produced_waste_volume_updated for agent in model.schedule.agents if agent.agent=="Household" and agent.municipality == municipality])
         return municipality_waste
 
-    def plastic_waste_municipality(model, municipality):
-        municipality_waste = sum([agent.recycled_plastic for agent in model.schedule.agents if agent.agent == "Household" and agent.municipality == municipality])
-        municipality_plastic_waste = sum([agent.recycled_plastic for agent in model.schedule.agents if agent.agent == "Household" and agent.municipality == municipality])
+    def total_plastic_waste_municipality(model, municipality):
+        municipality_plastic_waste = sum([agent.recycled_plastic for agent in model.schedule.agents if
+                                          agent.agent == "Household" and agent.municipality == municipality])
         return municipality_plastic_waste
+
+    def recycled_plastic_waste_municipality(model, municipality):
+        recycled_municipality_plastic_waste = sum([agent.recycled_plastic for agent in model.schedule.agents if agent.agent == "Household" and agent.municipality == municipality])
+        return recycled_municipality_plastic_waste
+
 
 
 

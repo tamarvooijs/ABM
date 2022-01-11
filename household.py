@@ -35,7 +35,7 @@ class Household(Agent):
         self.municipality = municipality
         self.produced_waste_volume_base = waste(self.model.schedule.time, self.type)
         self.produced_waste_volume_updated = 0
-        self.factor_plastic = 0.08
+        self.factor_plastic = 0.3
         self.produced_plastic = 0
         self.recycled_plastic = 0
         Household.initial_knowledge(self)
@@ -45,9 +45,9 @@ class Household(Agent):
 
         self.produced_waste_volume_updated = waste(self.model.schedule.time, self.type)
         # perception influences the plastic that is separated
-        self.produced_plastic = self.produced_waste_volume_updated * self.factor_plastic * self.perception
+        self.produced_plastic = self.produced_waste_volume_updated * self.factor_plastic
         # knowledge influences the plastic that is valuable
-        self.recycled_plastic = self.produced_plastic * self.knowledge
+        self.recycled_plastic = self.produced_plastic * self.perception * self.knowledge
 
         print("Hi, I am household " + str(self.unique_id) + " and I belong to " + self.municipality)
         return 0
