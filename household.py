@@ -19,8 +19,8 @@ def waste(x, type):
         print("error")
         return 1
 
-    waste = 40 - 0.04 * x - math.exp(-0.01 * x) * math.sin(0.3 * x) * number_of_persons
-
+    waste_function = 40 - 0.04 * x - math.exp(-0.01 * x) * math.sin(0.3 * x) * number_of_persons
+    waste = waste_function * random.uniform(0.95, 1.05)
     return waste
 
 
@@ -49,7 +49,7 @@ class Household(Agent):
         # knowledge influences the plastic that is valuable
         self.recycled_plastic = self.produced_plastic * self.perception * self.knowledge
 
-        print("Hi, I am household " + str(self.unique_id) + " and I belong to " + self.municipality)
+        print("Hi, I am household " + str(self.unique_id) + " and I belong to " + self.municipality.name)
         return 0
 
     def initial_perception(self):
@@ -65,6 +65,8 @@ class Household(Agent):
             perception_range = (0.4, 0.7)
 
         self.perception = random.uniform(perception_range[0], perception_range[1])
+        if self.municipality.policies["Perception"] == True or self.municipality.policies["Knowledge + perception"] == True:
+            self.knowledge += 0.1
 
     def initial_knowledge(self):
         knowledge_range = (0, 0)
@@ -79,7 +81,8 @@ class Household(Agent):
             knowledge_range = (0.3, 0.6)
 
         self.knowledge = random.uniform(knowledge_range[0], knowledge_range[1])
-
+        if self.municipality.policies["Knowledge"] == True or self.municipality.policies["Knowledge + perception"] == True:
+            self.knowledge += 0.1
 
 
 

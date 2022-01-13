@@ -75,7 +75,15 @@ class RecyclingModel(Model):
             "Recycled plastic waste Rotterdam": lambda self: self.recycled_plastic_waste_municipality("Rotterdam"),
             "Recycled plastic waste Vlaardingen": lambda self: self.recycled_plastic_waste_municipality("Vlaardingen"),
             "Recycled plastic waste Schiedam": lambda self: self.recycled_plastic_waste_municipality("Schiedam"),
-            "Percentage recycled Rotterdam": lambda self: self.waste_count_municipality("Rotterdam")/self.recycled_plastic_waste_municipality("Rotterdam") if self.schedule.time != 0 else 0
+            "Percentage recycled Rotterdam": lambda self: self.recycled_plastic_waste_municipality(
+                "Rotterdam") / self.waste_count_municipality("Rotterdam") if self.recycled_plastic_waste_municipality(
+                "Rotterdam") != 0 else 0,
+            "Percentage recycled Vlaardingen": lambda self: self.recycled_plastic_waste_municipality(
+                "Vlaardingen") / self.waste_count_municipality("Vlaardingen") if self.recycled_plastic_waste_municipality(
+                "Vlaardingen") != 0 else 0,
+            "Percentage recycled Schiedam": lambda self: self.recycled_plastic_waste_municipality(
+                "Schiedam") / self.waste_count_municipality("Schiedam") if self.recycled_plastic_waste_municipality(
+                "Schiedam") != 0 else 0
         })
 
         self.datacollector_waste.collect((self))
@@ -90,7 +98,7 @@ class RecyclingModel(Model):
 
                 # Add waste of household to corresponding municipality
                 for j in self.schedule.agents:
-                    if j.agent == "Municipality" and i.municipality == j.unique_id:
+                    if j.agent == "Municipality" and i.municipality.name == j.unique_id:
                         # Add waste for this step to municipality
                         j.mun_waste_this_year += i.recycled_plastic
 
@@ -154,22 +162,28 @@ class RecyclingModel(Model):
                     self.citycells[municipality.name].append(y)
                     self.grid.place_agent(municipality, y)
 
-            # TODO: create more households
-            RecyclingModel.generate_households(self, municipality.number_of_households, i)
+            RecyclingModel.generate_households(self, municipality.number_of_households, i, municipality)
 
 
 
 
-    def generate_households(self, number_of_households, municipality):
+    def generate_households(self, number_of_households, municipality_name, municipality):
         types_of_households = ["Individual", "Couple", "Family", "Retired_couple", "Retired_single"]
 
         # households are generated based on literature about the distribution of households in The Netherlands
-        distribution_households = [0.35, 0.27, 0.33, 0.02, 0.04]
+        distribution_households_Rotterdam = [42, 8, 20, 1, 29]
+        distribution_households_Schiedam = [36, 7, 15, 4, 38]
+        distribution_households_Vlaardingen = [30, 9, 12, 7, 42]
         list_hh = []
 
         for i in range(number_of_households):
-
-            type_hh = random.choices(types_of_households, distribution_households)[0]
+            random.seed(10)
+            if municipality.name == "Rotterdam":
+                type_hh = random.choices(types_of_households, distribution_households_Rotterdam)[0]
+            elif municipality.name == "Schiedam":
+                type_hh = random.choices(types_of_households, distribution_households_Schiedam)[0]
+            elif municipality.name == "Vlaardingen":
+                type_hh = random.choices(types_of_households, distribution_households_Vlaardingen)[0]
             household = Household((municipality, i), self, type_hh, "yes", municipality)
             self.num_agents += 1
             self.schedule.add(household)
@@ -177,7 +191,7 @@ class RecyclingModel(Model):
             MyCells = []
 
             for j in self.citycells.keys():
-                if household.municipality == j:
+                if household.municipality.name == j:
                     MyCells.append(self.citycells[j])
                     cell = random.choice(random.choice(MyCells))
                     self.grid.place_agent(household, cell)
@@ -189,16 +203,16 @@ class RecyclingModel(Model):
         return
 
     def waste_count_municipality(model, municipality):
-        municipality_waste = sum([agent.produced_waste_volume_updated for agent in model.schedule.agents if agent.agent=="Household" and agent.municipality == municipality])
+        municipality_waste = sum([agent.produced_waste_volume_updated for agent in model.schedule.agents if agent.agent=="Household" and agent.municipality.name == municipality])
         return municipality_waste
 
     def total_plastic_waste_municipality(model, municipality):
         municipality_plastic_waste = sum([agent.recycled_plastic for agent in model.schedule.agents if
-                                          agent.agent == "Household" and agent.municipality == municipality])
+                                          agent.agent == "Household" and agent.municipality.name == municipality])
         return municipality_plastic_waste
 
     def recycled_plastic_waste_municipality(model, municipality):
-        recycled_municipality_plastic_waste = sum([agent.recycled_plastic for agent in model.schedule.agents if agent.agent == "Household" and agent.municipality == municipality])
+        recycled_municipality_plastic_waste = sum([agent.recycled_plastic for agent in model.schedule.agents if agent.agent == "Household" and agent.municipality.name == municipality])
         return recycled_municipality_plastic_waste
 
 

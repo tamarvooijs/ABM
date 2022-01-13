@@ -40,8 +40,11 @@ class RecyclingCompany(Agent):
                     self.technology.percentage = 0.5+ (self.technology.percentage/(math.sqrt((self.technology.percentage * self.technology.percentage)+1)))/2
                     self.technology.last_renewed = 0
 
-
-                    self.budget -= self.technology.costs
+                    for i in self.contracts:
+                        costs_technology = self.technology.costs
+                        if i.municipality.policies["Technology"] == True:
+                            costs_technology = self.technology.costs/2
+                    self.budget -= costs_technology
 
         if self.model.schedule.time % 12 == 0 and self.model.schedule.time != 0:
             self.calculate_profits()

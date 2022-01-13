@@ -66,16 +66,26 @@ chart_waste_total = ChartModule(
 
 chart_waste_plastic = ChartModule(
     [
-        {"Label": "Plastic waste Rotterdam", "Color": "green"},
-        {"Label": "Plastic waste Vlaardingen", "Color": "red"},
-        {"Label": "Plastic waste Schiedam", "Color": "yellow"},
+        {"Label": "Recycled plastic waste Rotterdam", "Color": "green"},
+        {"Label": "Recycled plastic waste Vlaardingen", "Color": "red"},
+        {"Label": "Recycled plastic waste Schiedam", "Color": "yellow"},
+    ],
+    canvas_height= 300,
+    data_collector_name="datacollector_waste"
+)
+
+chart_percentage_plastic = ChartModule(
+    [
+        {"Label": "Percentage recycled Rotterdam", "Color": "green"},
+        {"Label": "Percentage recycled Vlaardingen", "Color": "red"},
+        {"Label": "Percentage recycled Schiedam", "Color": "yellow"},
     ],
     canvas_height= 300,
     data_collector_name="datacollector_waste"
 )
 
 server = ModularServer(RecyclingModel,
-                       [grid, chart_waste_total, chart_waste_plastic],
+                       [grid, chart_waste_total, chart_waste_plastic, chart_percentage_plastic],
                        "Recycling Model",
                        {})
 server.port = 8521 # The default
