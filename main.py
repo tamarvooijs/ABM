@@ -51,8 +51,7 @@ class RandomActivationPerType(time.BaseScheduler):
 class RecyclingModel(Model):
     "Model in which agents recycle"
 
-
-    def __init__(self):
+    def __init__(self, knowledge_policy, household_num_rotterdam):
         self.height = 50
         self.width = 50
         self.grid = MultiGrid(self.width, self.height, False)
@@ -63,7 +62,8 @@ class RecyclingModel(Model):
         self.exogenous_price = 0.25
         self.running = True
         self.citycells = {}
-
+        self.knowledge_policy = knowledge_policy
+        self.household_num_rotterdam = household_num_rotterdam
         self.generate_municipalities()
 
         self.generate_companies()
@@ -82,7 +82,7 @@ class RecyclingModel(Model):
                 "Vlaardingen") / self.waste_count_municipality("Vlaardingen") if self.recycled_plastic_waste_municipality(
                 "Vlaardingen") != 0 else 0,
             "Percentage recycled Schiedam": lambda self: self.recycled_plastic_waste_municipality(
-                "Schiedam") / self.waste_count_municipality("Schiedam") if self.recycled_plastic_waste_municipality(
+                "Schiedam")/ self.waste_count_municipality("Schiedam") if self.recycled_plastic_waste_municipality(
                 "Schiedam") != 0 else 0
         })
 
@@ -172,8 +172,8 @@ class RecyclingModel(Model):
 
         # households are generated based on literature about the distribution of households in The Netherlands
         distribution_households_Rotterdam = [42, 8, 20, 1, 29]
-        distribution_households_Schiedam = [36, 7, 15, 4, 38]
-        distribution_households_Vlaardingen = [30, 9, 12, 7, 42]
+        distribution_households_Schiedam = [36, 7, 15, 24, 18]
+        distribution_households_Vlaardingen = [30, 9, 42, 7, 12]
         list_hh = []
 
         for i in range(number_of_households):
@@ -212,8 +212,10 @@ class RecyclingModel(Model):
         return municipality_plastic_waste
 
     def recycled_plastic_waste_municipality(model, municipality):
-        recycled_municipality_plastic_waste = sum([agent.recycled_plastic for agent in model.schedule.agents if agent.agent == "Household" and agent.municipality.name == municipality])
+        recycled_municipality_plastic_waste = sum([agent.recycled_plastic * agent.municipality.factor_company for agent in model.schedule.agents if agent.agent == "Household" and agent.municipality.name == municipality])
         return recycled_municipality_plastic_waste
+
+
 
 
 

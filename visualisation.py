@@ -1,6 +1,7 @@
 from mesa.visualization.ModularVisualization import ModularServer
 from mesa.visualization.modules import CanvasGrid, ChartModule
 from main import RecyclingModel
+from mesa.visualization.UserParam import UserSettableParameter
 
 
 def agent_portrayal(agent):
@@ -47,11 +48,6 @@ def agent_portrayal(agent):
 
     return portrayal
 
-
-Mun_Names = ["Rotterdam", "Den Haag"]
-Comp_Names = ["Perpetual"]
-
-
 grid = CanvasGrid(agent_portrayal, 50, 50, 500, 500)
 
 chart_waste_total = ChartModule(
@@ -84,9 +80,15 @@ chart_percentage_plastic = ChartModule(
     data_collector_name="datacollector_waste"
 )
 
+# If we want a nice dashboard to play with
+model_params = {
+    "knowledge_policy": UserSettableParameter("checkbox", "Knowledge policy", value=False),
+    "household_num_rotterdam": UserSettableParameter("slider","Households Rotterdam", 50, 1, 100, 1)
+}
+
 server = ModularServer(RecyclingModel,
                        [grid, chart_waste_total, chart_waste_plastic, chart_percentage_plastic],
                        "Recycling Model",
-                       {})
+                       model_params)
 server.port = 8521 # The default
 server.launch()

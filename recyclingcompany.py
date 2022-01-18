@@ -2,6 +2,7 @@ from mesa import Agent
 import math
 from technology import Technology
 from scipy.stats import bernoulli
+import random
 
 class Contract():
     def __init__(self, Company, Municipality):
@@ -16,11 +17,12 @@ class RecyclingCompany(Agent):
         self.model = model
         self.technology = Technology("T" + unique_id, self.model)
         self.contracts = []
-        self.percentage_filtered = percentage_filtered
+        self.percentage_filtered = 0
         self.average_percentage = []
         self.collected_over_years = []
         self.profit = 0.0
-        self.budget = 0.0
+        self.budget = random.uniform(200, 800)
+
 
     def step(self):
 
@@ -28,7 +30,13 @@ class RecyclingCompany(Agent):
 
             self.technology.last_renewed += 1
             # In this case, technologies have a constant price
-            if self.budget > self.technology.costs:
+
+            for i in self.contracts:
+                costs_technology = self.technology.costs
+                if i.municipality.policies["Technology"] == True:
+                    costs_technology = self.technology.costs / 2
+
+            if self.budget > costs_technology:
                 if self.technology.last_renewed/10 < 1:
                     p = self.technology.last_renewed/10
                 else:
@@ -40,14 +48,14 @@ class RecyclingCompany(Agent):
                     self.technology.percentage = 0.5+ (self.technology.percentage/(math.sqrt((self.technology.percentage * self.technology.percentage)+1)))/2
                     self.technology.last_renewed = 0
 
-                    for i in self.contracts:
-                        costs_technology = self.technology.costs
-                        if i.municipality.policies["Technology"] == True:
-                            costs_technology = self.technology.costs/2
+
                     self.budget -= costs_technology
 
         if self.model.schedule.time % 12 == 0 and self.model.schedule.time != 0:
             self.calculate_profits()
+            self.percentage_filtered = self.average_percentage[-1] * self.technology.percentage
+            for i in self.contracts:
+                i.municipality.factor_company = self.percentage_filtered
             self.budget += self.profit
             print("my budget is ", self.unique_id, self.budget)
 
@@ -63,8 +71,11 @@ class RecyclingCompany(Agent):
             total_amount += i.municipality.mun_waste_per_year[-1]
         print("Amount:", total_amount)
         if total_amount > self.technology.throughput:
+            average_percentage = self.technology.throughput/total_amount
             total_amount = self.technology.throughput
-        self.average_percentage = total_amount
+        else:
+            average_percentage = 1
+        self.average_percentage.append(average_percentage)
         self.profit = total_amount * self.model.exogenous_price
         print("Amount",  total_amount)
         print("Percentage", self.unique_id, self.technology.percentage)

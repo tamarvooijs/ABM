@@ -4,7 +4,7 @@ from mesa.datacollection import DataCollector
 import mesa.time as time
 import math
 import random
-
+import numpy as np
 
 
 def waste(x, type):
@@ -47,42 +47,58 @@ class Household(Agent):
         # perception influences the plastic that is separated
         self.produced_plastic = self.produced_waste_volume_updated * self.factor_plastic
         # knowledge influences the plastic that is valuable
-        self.recycled_plastic = self.produced_plastic * self.perception * self.knowledge
+        self.recycled_plastic = self.produced_plastic  * self.knowledge * self.perception
 
-        print("Hi, I am household " + str(self.unique_id) + " and I belong to " + self.municipality.name)
-        return 0
+        if self.municipality.policies["Perception"] == True or self.municipality.policies["Knowledge + perception"] == True:
+            if self.model.schedule.time <= self.perception_time:
+                self.perception += (0.3*self.perception_change/self.perception_time)
 
     def initial_perception(self):
         perception_range = (0, 0)
 
         if self.type == "Individual":
             perception_range = (0.4, 0.6)
-        if self.type == "Retired":
+            perception_time = np.round(np.random.beta(2,2) * 24, 0)
+            perception_change = np.random.beta(2,2)
+        elif self.type == "Retired_couple":
             perception_range = (0.2, 0.5)
-        if self.type == "Couple":
+            perception_time = np.round(np.random.beta(2,3) * 24, 0)
+            perception_change = np.random.beta(3,2)
+        elif self.type == "Retired_single":
+            perception_range = (0.2, 0.5)
+            perception_time = np.round(np.random.beta(2,4) * 24, 0)
+            perception_change = np.random.beta(4,2)
+        elif self.type == "Couple":
             perception_range = (0.5, 0.7)
-        if self.type == "Family":
+            perception_time = np.round(np.random.beta(4,2) * 24, 0)
+            perception_change = np.random.beta(2,4)
+        elif self.type == "Family":
             perception_range = (0.4, 0.7)
+            perception_time = np.round(np.random.beta(3,2) * 24, 0)
+            perception_change = np.random.beta(2,3)
 
         self.perception = random.uniform(perception_range[0], perception_range[1])
-        if self.municipality.policies["Perception"] == True or self.municipality.policies["Knowledge + perception"] == True:
-            self.knowledge += 0.1
+        self.perception_time = perception_time
+        self.perception_change = perception_change
+        # if self.municipality.policies["Perception"] == True or self.municipality.policies["Knowledge + perception"] == True:
+        #     self.perception += random.uniform(0.05, 0.2)
 
     def initial_knowledge(self):
         knowledge_range = (0, 0)
 
         if self.type == "Individual":
             knowledge_range = (0.4, 0.6)
-        if self.type == "Retired_couple" or "Retired_single":
+        elif self.type == "Retired_couple" or "Retired_single":
             knowledge_range = (0.2, 0.5)
-        if self.type == "Couple":
+        elif self.type == "Couple":
             knowledge_range = (0.5, 0.7)
-        if self.type == "Family":
+        elif self.type == "Family":
             knowledge_range = (0.3, 0.6)
 
         self.knowledge = random.uniform(knowledge_range[0], knowledge_range[1])
         if self.municipality.policies["Knowledge"] == True or self.municipality.policies["Knowledge + perception"] == True:
             self.knowledge += 0.1
+            self.knowledge += random.uniform(0, 0.2)
 
 
 
