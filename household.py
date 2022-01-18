@@ -50,8 +50,8 @@ class Household(Agent):
         self.recycled_plastic = self.produced_plastic  * self.knowledge * self.perception
 
         if self.municipality.policies["Perception"] == True or self.municipality.policies["Knowledge + perception"] == True:
-            if self.model.schedule.time <= self.perception_time:
-                self.perception += (0.3*self.perception_change/self.perception_time)
+
+                self.perception += (0.3*self.perception_change)
 
     def initial_perception(self):
         perception_range = (0, 0)
@@ -97,7 +97,6 @@ class Household(Agent):
 
         self.knowledge = random.uniform(knowledge_range[0], knowledge_range[1])
         if self.municipality.policies["Knowledge"] == True or self.municipality.policies["Knowledge + perception"] == True:
-            self.knowledge += 0.1
             self.knowledge += random.uniform(0, 0.2)
 
 

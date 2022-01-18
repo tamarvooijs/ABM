@@ -30,7 +30,7 @@ class RecyclingCompany(Agent):
 
                 self.technology.last_renewed += 1
                 # In this case, technologies have a constant price
-
+                print("print", self.contracts)
 
                 for i in self.contracts:
 

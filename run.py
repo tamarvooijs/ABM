@@ -41,7 +41,7 @@ def run_model():
 
 dataframe = run_model()
 
-iterations = 10
+iterations = 100
 averages = []
 for i in range(iterations):
     dataframe = run_model()
