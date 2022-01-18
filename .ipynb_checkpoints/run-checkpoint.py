@@ -32,8 +32,8 @@ No_HH = 100
 Comp_Names = ["Perpetual"]
 model = RecyclingModel()
 
+
 def run_model():
-   model = RecyclingModel()
    number_of_steps = 240
    for i in range(number_of_steps):
       model.step()
@@ -41,17 +41,5 @@ def run_model():
 
 dataframe = run_model()
 
-iterations = 10
-averages = []
-for i in range(iterations):
-    dataframe = run_model()
-    dataframe = dataframe[1:241]
-    dataframe["average_cities"] = (dataframe["Percentage recycled Rotterdam"] + dataframe["Percentage recycled Vlaardingen"] + dataframe["Percentage recycled Schiedam"])/3
-    averages.append(dataframe['average_cities'].mean())
-
-
-
-dataframe = run_model()
-
-
+print(dataframe)
 

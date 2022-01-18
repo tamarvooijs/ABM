@@ -12,7 +12,6 @@ class Municipality(Agent):
         self.agent = "Municipality"
         self.name = unique_id
         self.number_of_households = number_of_households
-        self.budget = 0
         self.contract = None
         self.infrastructure = True
         self.mun_waste_this_year = 0
@@ -22,7 +21,7 @@ class Municipality(Agent):
         self.factor_company = 0.4
 
     def step(self):
-        print("Hi, I am municipality " + str(self.unique_id) + ".")
+        #print("Hi, I am municipality " + str(self.unique_id) + ".")
 
         # Store waste for every year in mun_waste_per_year
         if self.model.schedule.time % 12 == 0 and self.model.schedule.time != 0:
@@ -32,7 +31,7 @@ class Municipality(Agent):
         # New contract every 3 years
         if self.model.schedule.time % 36 == 1 and self.model.schedule.time != 1:
             self.search_contract()
-            print("I want a new contract for this amount of waste ", np.mean(self.mun_waste_per_year[-3:]))
+            #print("I want a new contract for this amount of waste ", np.mean(self.mun_waste_per_year[-3:]))
 
         elif self.model.schedule.time == 0:
             list_companies = []

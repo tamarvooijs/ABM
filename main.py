@@ -51,7 +51,7 @@ class RandomActivationPerType(time.BaseScheduler):
 class RecyclingModel(Model):
     "Model in which agents recycle"
 
-    def __init__(self, knowledge_policy, household_num_rotterdam):
+    def __init__(self):
         self.height = 50
         self.width = 50
         self.grid = MultiGrid(self.width, self.height, False)
@@ -62,8 +62,8 @@ class RecyclingModel(Model):
         self.exogenous_price = 0.25
         self.running = True
         self.citycells = {}
-        self.knowledge_policy = knowledge_policy
-        self.household_num_rotterdam = household_num_rotterdam
+        #self.knowledge_policy = knowledge_policy
+        #self.household_num_rotterdam = household_num_rotterdam
         self.generate_municipalities()
 
         self.generate_companies()
@@ -84,6 +84,7 @@ class RecyclingModel(Model):
             "Percentage recycled Schiedam": lambda self: self.recycled_plastic_waste_municipality(
                 "Schiedam")/ self.waste_count_municipality("Schiedam") if self.recycled_plastic_waste_municipality(
                 "Schiedam") != 0 else 0
+
         })
 
         self.datacollector_waste.collect((self))
@@ -177,7 +178,7 @@ class RecyclingModel(Model):
         list_hh = []
 
         for i in range(number_of_households):
-            random.seed(10)
+
             if municipality.name == "Rotterdam":
                 type_hh = random.choices(types_of_households, distribution_households_Rotterdam)[0]
             elif municipality.name == "Schiedam":
@@ -199,7 +200,7 @@ class RecyclingModel(Model):
 
 
             list_hh.append(type_hh)
-        print("list", list_hh)
+
         return
 
     def waste_count_municipality(model, municipality):
