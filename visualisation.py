@@ -32,14 +32,14 @@ def agent_portrayal(agent):
                      "w":1,
                      "h":1}
     elif agent.agent == "Company":
-        if agent.technology.throughput < 1000:
+        if agent.percentage_filtered < 0.1:
             portrayal = {"Shape": "circle",
                          "Filled": "true",
                          "Layer": 0,
                          "Color": "grey",
                          "r": 1}
         else:
-            big = agent.technology.throughput / 1000
+            big = agent.percentage_filtered * 5
             portrayal = {"Shape": "circle",
                          "Filled": "true",
                          "Layer": 0,
@@ -81,14 +81,16 @@ chart_percentage_plastic = ChartModule(
 )
 
 # If we want a nice dashboard to play with
+
 model_params = {
     "knowledge_policy": UserSettableParameter("checkbox", "Knowledge policy", value=False),
-    "household_num_rotterdam": UserSettableParameter("slider","Households Rotterdam", 50, 1, 100, 1)
-}
+    "household_num_rotterdam": UserSettableParameter("slider", "Households Rotterdam", 50, 1, 100, 1)
+    }
+
 
 server = ModularServer(RecyclingModel,
-                       [grid, chart_waste_total, chart_waste_plastic, chart_percentage_plastic],
+                       [grid, chart_percentage_plastic],
                        "Recycling Model",
-                       model_params)
+                       {"policies" :{"Knowledge": False, "Perception": True, "Knowledge + perception": False, "Technology": False}})
 server.port = 8521 # The default
 server.launch()
