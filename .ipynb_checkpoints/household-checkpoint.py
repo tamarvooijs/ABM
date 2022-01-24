@@ -19,7 +19,7 @@ def waste(x, type):
         print("error")
         return 1
 
-    waste_function = (40 - 0.04 * x - math.exp(-0.01 * x) * math.sin(0.3 * x)) * number_of_persons
+    waste_function = 40 - 0.04 * x - math.exp(-0.01 * x) * math.sin(0.3 * x) * number_of_persons
     waste = waste_function * random.uniform(0.95, 1.05)
     return waste
 
@@ -49,7 +49,9 @@ class Household(Agent):
         # knowledge influences the plastic that is valuable
         self.recycled_plastic = self.produced_plastic  * self.knowledge * self.perception
 
+        if self.municipality.policies["Perception"] == True or self.municipality.policies["Knowledge + perception"] == True:
 
+                self.perception += random.uniform(0, 0.2)
 
     def initial_perception(self):
         perception_range = (0, 0)
@@ -57,29 +59,29 @@ class Household(Agent):
         if self.type == "Individual":
             perception_range = (0.4, 0.6)
             perception_time = np.round(np.random.beta(2,2) * 24, 0)
-            perception_change = random.uniform(0.15, 0.3)
+            perception_change = random.uniform(0.1, 0.2)
         elif self.type == "Retired_couple":
             perception_range = (0.2, 0.5)
             perception_time = np.round(np.random.beta(2,3) * 24, 0)
-            perception_change = random.uniform(0.1, 0.25)
+            perception_change = random.uniform(0.05, 0.15)
         elif self.type == "Retired_single":
             perception_range = (0.2, 0.5)
             perception_time = np.round(np.random.beta(2,4) * 24, 0)
-            perception_change = random.uniform(0.15, 0.20)
+            perception_change = random.uniform(0, 0.15)
         elif self.type == "Couple":
             perception_range = (0.5, 0.7)
             perception_time = np.round(np.random.beta(4,2) * 24, 0)
-            perception_change = random.uniform(0.25, 0.3)
+            perception_change = random.uniform(0.15, 0.2)
         elif self.type == "Family":
             perception_range = (0.4, 0.7)
             perception_time = np.round(np.random.beta(3,2) * 24, 0)
-            perception_change = random.uniform(0.1, 0.3)
+            perception_change = random.uniform(0.05, 0.1)
 
         self.perception = random.uniform(perception_range[0], perception_range[1])
         self.perception_time = perception_time
         self.perception_change = perception_change
-        if self.municipality.policies["Perception"] == True or self.municipality.policies["Knowledge + perception"] == True:
-             self.perception += perception_change
+        # if self.municipality.policies["Perception"] == True or self.municipality.policies["Knowledge + perception"] == True:
+        #     self.perception += random.uniform(0.05, 0.2)
 
     def initial_knowledge(self):
         knowledge_range = (0, 0)

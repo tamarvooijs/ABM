@@ -47,7 +47,7 @@ class RecyclingCompany(Agent):
 
                         self.technology.version += 1
                         self.technology.throughput = self.technology.throughput * 1.1
-                        self.technology.percentage = 0.5+ (self.technology.percentage/(math.sqrt((self.technology.percentage * self.technology.percentage)+1)))/2
+                        self.technology.percentage = 0.5 + (self.technology.percentage/(math.sqrt((self.technology.percentage * self.technology.percentage)+1)))/2
                         self.technology.last_renewed = 0
 
 

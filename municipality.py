@@ -17,7 +17,7 @@ class Municipality(Agent):
         self.mun_waste_this_year = 0
         self.mun_waste_per_year = []
         # TODO: implement policies as numbers/names that are either True or False
-        self.policies = {"Knowledge": False, "Perception": False, "Knowledge + perception": False, "Technology": True}
+        self.policies = self.model.policies
         self.factor_company = 0.4
 
     def step(self):

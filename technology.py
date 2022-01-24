@@ -8,7 +8,7 @@ class Technology:
         self.version = 0
         self.last_renewed = 0
         self.percentage = 0.5
-        self.throughput = 3000
+        self.throughput = 8000
         self.new = False
         self.costs = 500
 
