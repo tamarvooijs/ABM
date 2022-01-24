@@ -84,13 +84,15 @@ chart_percentage_plastic = ChartModule(
 
 model_params = {
     "knowledge_policy": UserSettableParameter("checkbox", "Knowledge policy", value=False),
-    "household_num_rotterdam": UserSettableParameter("slider", "Households Rotterdam", 50, 1, 100, 1)
+    "perception_policy": UserSettableParameter("checkbox", "Perception policy", value=False),
+    "perceptionknowledge_policy": UserSettableParameter("checkbox", "Perception and knowledge policy", value=False),
+    "technology_policy": UserSettableParameter("checkbox", "Technology policy", value=False),
     }
 
 
 server = ModularServer(RecyclingModel,
                        [grid, chart_percentage_plastic],
                        "Recycling Model",
-                       {"policies" :{"Knowledge": True, "Perception": False, "Knowledge + perception": False, "Technology": False}})
+                       model_params)
 server.port = 8521 # The default
 server.launch()

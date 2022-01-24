@@ -51,7 +51,7 @@ class RandomActivationPerType(time.BaseScheduler):
 class RecyclingModel(Model):
     "Model in which agents recycle"
 
-    def __init__(self, policies):
+    def __init__(self, knowledge_policy, perception_policy, perceptionknowledge_policy, technology_policy):
         self.height = 50
         self.width = 50
         self.grid = MultiGrid(self.width, self.height, False)
@@ -61,10 +61,12 @@ class RecyclingModel(Model):
         self.num_agents = 0
         self.exogenous_price = 0.25
         self.running = True
-        self.policies = policies
+        self.policies = {"Knowledge": True, "Perception": False, "Knowledge + perception": False, "Technology": False}
         self.citycells = {}
-        #self.knowledge_policy = knowledge_policy
-        #self.household_num_rotterdam = household_num_rotterdam
+        self.knowledge_policy = knowledge_policy
+        self.perception_policy = perception_policy
+        self.perceptionknowledge_policy = perceptionknowledge_policy
+        self.technology_policy = technology_policy
         self.generate_municipalities()
 
         self.generate_companies()

@@ -78,7 +78,7 @@ class Household(Agent):
         self.perception = random.uniform(perception_range[0], perception_range[1])
         self.perception_time = perception_time
         self.perception_change = perception_change
-        if self.municipality.policies["Perception"] == True or self.municipality.policies["Knowledge + perception"] == True:
+        if self.municipality.policies["Perception"] == True or self.municipality.policies["Knowledge + perception"] == True or self.model.perception_policy == True or self.model.perceptionknowledge_policy == True:
              self.perception += perception_change
 
     def initial_knowledge(self):
@@ -94,7 +94,7 @@ class Household(Agent):
             knowledge_range = (0.3, 0.6)
 
         self.knowledge = random.uniform(knowledge_range[0], knowledge_range[1])
-        if self.municipality.policies["Knowledge"] == True or self.municipality.policies["Knowledge + perception"] == True:
+        if self.municipality.policies["Knowledge"] == True or self.municipality.policies["Knowledge + perception"] == True or self.model.knowledge_policy == True or self.model.perceptionknowledge_policy == True:
             self.knowledge += random.uniform(0, 0.2)
 
 

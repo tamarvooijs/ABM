@@ -51,7 +51,7 @@ No_HH = 100
 
 
 
-model = RecyclingModel(policies = {"Knowledge": False, "Perception": True, "Knowledge + perception": False, "Technology": False})
+model = RecyclingModel("knowledge_policy"== False, "perception_policy"== True, "perceptionknowledge_policy"== False, "technology_policy"== False)
 model.run_model()
 dataframe=model.datacollector_waste.get_model_vars_dataframe()
 

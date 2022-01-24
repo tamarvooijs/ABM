@@ -35,7 +35,7 @@ class RecyclingCompany(Agent):
                 for i in self.contracts:
 
                     costs_technology = self.technology.costs
-                    if i.municipality.policies["Technology"] == True:
+                    if i.municipality.policies["Technology"] == True or self.model.technology_policy == True:
                         costs_technology = self.technology.costs / 2
 
                 if self.budget > costs_technology:
