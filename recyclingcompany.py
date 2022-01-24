@@ -11,7 +11,8 @@ class Contract():
 
 
 class RecyclingCompany(Agent):
-    def __init__(self, unique_id, model, percentage_filtered):
+    """" Recycling companies process the waste and have different contracts and technologies"""
+    def __init__(self, unique_id, model):
         super().__init__(unique_id, model)
         self.agent = "Company"
         self.model = model
@@ -59,7 +60,6 @@ class RecyclingCompany(Agent):
                 for i in self.contracts:
                     i.municipality.factor_company = self.percentage_filtered
                 self.budget += self.profit
-            #print("Hi, I am company " + str(self.unique_id) + " and my contracts are" + str(self.contracts))
             return 0
 
     def calculate_profits(self):

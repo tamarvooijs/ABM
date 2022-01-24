@@ -130,7 +130,7 @@ class RecyclingModel(Model):
     def generate_companies(self):
         Company_Names = ["alfa", "beta"]
         for i in range(len(Company_Names)):
-            company = RecyclingCompany(Company_Names[i], self, 50)
+            company = RecyclingCompany(Company_Names[i], self)
             self.schedule.add(company)
             o = self.grid.find_empty()
             self.grid.place_agent(company, o)

@@ -7,6 +7,7 @@ import random
 
 
 class Municipality(Agent):
+    """ Municipalities collect the waste from the households, can use different policies and have contract with the recycling companies """
     def __init__(self, unique_id, model, number_of_households):
         super().__init__(unique_id, model)
         self.agent = "Municipality"
@@ -16,12 +17,10 @@ class Municipality(Agent):
         self.infrastructure = True
         self.mun_waste_this_year = 0
         self.mun_waste_per_year = []
-        # TODO: implement policies as numbers/names that are either True or False
         self.policies = self.model.policies
         self.factor_company = 0.4
 
     def step(self):
-        #print("Hi, I am municipality " + str(self.unique_id) + ".")
 
         # Store waste for every year in mun_waste_per_year
         if self.model.schedule.time % 12 == 0 and self.model.schedule.time != 0:
@@ -31,7 +30,6 @@ class Municipality(Agent):
         # New contract every 3 years
         if self.model.schedule.time % 36 == 1 and self.model.schedule.time != 1:
             self.search_contract()
-            #print("I want a new contract for this amount of waste ", np.mean(self.mun_waste_per_year[-3:]))
 
         elif self.model.schedule.time == 0:
             list_companies = []
