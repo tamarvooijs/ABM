@@ -6,7 +6,7 @@ from mesa.visualization.UserParam import UserSettableParameter
 
 def agent_portrayal(agent):
     if agent.agent == "Household":
-        if agent.knowledge > 0.8:
+        if agent.knowledge > 0.7:
             portrayal = {"Shape": "circle",
                          "Filled": "true",
                          "Layer": 0,
@@ -91,6 +91,6 @@ model_params = {
 server = ModularServer(RecyclingModel,
                        [grid, chart_percentage_plastic],
                        "Recycling Model",
-                       {"policies" :{"Knowledge": False, "Perception": True, "Knowledge + perception": False, "Technology": False}})
+                       {"policies" :{"Knowledge": True, "Perception": False, "Knowledge + perception": False, "Technology": False}})
 server.port = 8521 # The default
 server.launch()
